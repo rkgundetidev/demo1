@@ -1,0 +1,23 @@
+<aura:component >
+    <aura:attribute name="reportdata" type="Object[]"/>
+    <aura:attribute name="sts" type="String"/>
+    <aura:attribute name="cat" type="String"/>
+    <aura:attribute name="projtype" type="String"/>
+    <aura:attribute name="mnth" type="String"/>
+    <aura:attribute name="displayval" type="String"/>
+    <aura:attribute name="calctype" type="String" />
+    <aura:attribute name="skuids" type="String[]"/>
+    <aura:attribute name="attachevent" type="Boolean" default="false"/>
+    <aura:handler event="c:renderdynamicvals" action="{!c.handleEvent}"/>
+    <aura:registerEvent type="c:openprojectiondetails" name="openprojectiondetails"/>
+    <aura:if isTrue="{!v.attachevent}">
+        <div class="slds-col slds-size--1-of-1">
+            <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable" onclick="{!c.hello}" aura:id="contentdiv"><a href="javascript:void(0);">{!v.displayval}</a></div>
+        </div>
+        <aura:set attribute="else">
+            <div class="slds-col slds-size--1-of-1">
+                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label" aura:id="contentdiv">{!v.displayval}</div>
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

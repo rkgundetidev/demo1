@@ -1,0 +1,141 @@
+<aura:component >
+	
+	<aura:attribute name="lstSKUs" type="Brand__c[]"/>
+	<aura:attribute name="CATEGORY" type="String" />
+	<aura:attribute name="MONTH" type="String" />
+	<aura:attribute name="lifecycle" type="String" />
+	<aura:handler name="init" action="{!c.init}" value="{!this}" />
+	
+	<div class="slds-modal__container">
+                
+         <div class="slds-modal__header">
+             
+             <form class="slds-form--inline">
+               <div class="slds-form-element">
+                 <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="CATEGORY">CATEGORY : </label>
+                 <div class="slds-form-element__control">
+                     <label class="slds-form-element__label" style="color: darkblue;" id="CATEGORY">CATEGORY</label>
+                 </div>
+               </div>
+               
+               <div class="slds-form-element">
+                 <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="MONTH">MONTH : </label>
+                 <div class="slds-form-element__control">
+                     <label class="slds-form-element__label" style="color: darkblue;" id="MONTH">CATEGORY</label>
+                 </div>
+               </div>
+              
+               <div class="slds-form-element">
+                 <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="lifecycle">Life Cycle : </label>
+                 <div class="slds-form-element__control">
+                   <label class="slds-form-element__label" style="color: darkblue;" id="lifecycle">Life Cycle</label>
+                 </div>
+               </div>
+             </form>
+         </div>
+         <div class="slds-modal__content slds-p-around--medium" style="padding: 0px;height:260px;font-size:10px;">
+             
+                                         
+                 <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered" style="font-size:9px;">
+                   <thead>
+                     <tr class="slds-text-title--caps">
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:4.3%;font-size:9px;">
+
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="Brandcode">Brand Code</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:19.8%;font-size:9px;">
+                         <div class="slds-truncate" title="DESCRIPTION">DESCRIPTION</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Total<br/>Quantity<br/>From<br/>Actuals</div>
+                       </th>
+                       
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Net<br/>Invoice<br/>Value<br/>MM</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Shipments<br/>in<br/>MSU</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Three<br/>Month<br/>MM Net<br/>Invoice</div>
+                       </th>
+                       
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Three<br/>Month<br/>MSU<br/>Shipment</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Total<br/>Quantity<br/>from<br/>Actuals</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:7%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">EOH<br/>Inventory<br/>From<br/>Actual</div>
+                       </th>
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:8%;font-size:9px;">
+                         <div class="slds-truncate" title="INVENTORY">Type</div>
+                       </th>
+                       
+                       <th scope="col" style="background-color: #d8f9f4;font-weight: bold;width:11.4%;font-size:9px;">
+                         <div class="slds-truncate" title="SKU">SKU</div>
+                       </th>
+                     </tr>
+                   </thead>
+                </table>
+              <div style="height:190px;">
+                <div class="slds-scrollable--y">
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered">
+                   <tbody>
+                       <aura:iteration var="sk" items="{!v.lstSKUs}" indexVar="index">
+                           <tr>
+                               <th style="width:4%;">
+                                  <div class="slds-truncate" title="SKU"> {!index+1} </div>
+                               </th>
+                               <th scope="row" data-label="Opportunity Name" style="width:7.25%;">
+                                 <div class="slds-truncate" title="SKU"> {!sk.Brand_Code__c}</div>
+                               </th>
+                               <th scope="row" data-label="Opportunity Name" style="width:20%;white-space: nowrap;">
+                                 <div class="slds-truncate" title="Cloudhub"> {!sk.Brand_Description__c}</div>
+                               </th>
+                               <td data-label="Account Name" style="width:7.05%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Total_Quantity_Actuals__c}</div>
+                               </td>
+                               
+                               <td data-label="Account Name" style="width:7%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Net_Invoice_Value_MM__c}</div>
+                               </td>
+                               <td data-label="Account Name" style="width:7%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Shipments_in_MSU__c}</div>
+                               </td>
+                               <td data-label="Account Name" style="width:7%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Three_Month_MM_Net_Invoice__c}</div>
+                               </td>
+                               
+                               <td data-label="Account Name" style="width:7%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Three_Month_MSU_Shipment__c}</div>
+                               </td>
+                               <td data-label="Account Name" style="width:7%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Total_Quantity_Actuals__c}</div>
+                               </td>
+                               <td data-label="Account Name" style="width:7%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.EOH_Inventory__c}</div>
+                               </td>
+                               <td data-label="Account Name" style="width:8%;">
+                                 <div class="slds-truncate" title="Cloudhub">{!sk.Type__c}</div>
+                               </td>
+                               <td data-label="Close Date" style="width:10%;">
+                                 <div class="slds-truncate" title="4/14/2015">{!sk.SKU__r.SKU__c}</div> 
+                               </td>
+                           </tr>
+                       </aura:iteration>
+                     
+                   </tbody>
+                 </table>
+                 </div>
+             </div>
+         </div>
+         <div class="slds-modal__footer">
+             <!-- <button class="slds-button slds-button-neutral" onclick="{!c.hideModal}">Cancel</button> -->
+             
+         </div>
+     </div>
+</aura:component>

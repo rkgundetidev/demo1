@@ -1,0 +1,18 @@
+.THIS.hidden, .THIS .hidden{
+    display: none;
+}
+.THIS .col1{
+    color: seagreen;
+}
+.THIS .bold{
+    font-weight: bold;
+}
+.THIS .clickable{
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        antiquewhite 10px,
+        floralwhite 10px,
+        papayawhip 20px
+    );
+}

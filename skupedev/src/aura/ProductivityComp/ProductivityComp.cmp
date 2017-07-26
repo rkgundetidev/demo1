@@ -1,0 +1,91 @@
+<aura:component controller="LineChartController">
+	<aura:attribute name="firstComp" type="Boolean" default="true" />
+    <aura:attribute name="secondComp" type="Boolean" default="false" />
+    
+	<ltng:require scripts="{!$Resource.HighCharts}" afterScriptsLoaded="{!c.afterScriptsLoaded}"/>
+	<aura:handler event="c:FilterEvent" action="{!c.fetchRecords}"/>
+    <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}"/>
+	<!-- Actual Data -->
+    <aura:attribute name="lstTHeadWrap" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstFTHeadWrap" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstCatWrapper" type="LineChartController.dataWrapper"/>
+    <aura:attribute name="lstMainProjectionWrapper" type="LineChartController.dataWrapper"/>
+    <aura:attribute name="lstProjectionWrapper" type="LineChartController.dataWrapper"/>
+    <!-- Project Data -->
+    <aura:attribute name="lstTHeadWrapProj" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstCatWrapperProj" type="LineChartController.dataWrapper"/>
+    <!-- <aura:attribute name="lstDynamicData" type="LineChartController.SKUDynamicDataWrapper"/> -->
+    <aura:attribute name="lstSKUs" type="Brand__c[]"/>
+    <aura:attribute name="myMap" type="Map" />
+    
+    <aura:attribute name="term1" type="String[]" default="['Aircare']" />
+    <aura:attribute name="lCycle1" type="String[]" default="['AP']" />
+    <aura:attribute name="brand1" type="String[]" default="['AllAirCare']" />
+    <aura:attribute name="rangeEnd1" type="Date" default="" />
+    <aura:attribute name="rangeStart1" type="Date" />
+    
+    
+    <div class="SLDS">
+
+            <div id="Accspinner1" class="exampleHolder"> <!--class="exampleHolder"-->
+                <lightning:spinner aura:id="mySpinner" />
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                 <span class="slds-assistive-text">Loading</span>
+                 <div class="slds-spinner__dot-a"></div>
+                 <div class="slds-spinner__dot-b"></div>
+               </div>
+            </div>
+        
+   
+        <div class="demo-only slds-grid" style="height: 100%; max-width: 99%; background: #f4f6f9; padding: 1rem; padding-top: 0px;">
+            <div class="slds-panel slds-grid slds-grid_vertical slds-nowrap">
+                <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y">
+                    
+                    <!-- <div style="margin: 5px 0">Actuals</div> -->
+                    
+                    <div class="slds-tabs--scoped">
+                        <ul class="slds-tabs--scoped__nav" role="tablist">
+                            <!--style="background-color: #0070d2;"-->
+                            <li aura:id="t1" class="slds-tabs--scoped__item  slds-active" title="Actuals" role="presentation" onclick="{! c.tabOneAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-scoped-1" id="tab-scoped-1__item" style="text-decoration:none;">Actuals
+                                    <aura:if isTrue="{!v.firstComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it1" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.firstComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it11" height="30" width="30" />
+                                    </aura:if>
+                               </a>
+                            </li>
+                            <li aura:id="t2" class="slds-tabs--scoped__item " title="Projection" role="presentation" onclick="{! c.tabTwoAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-2" id="tab-scoped-2__item" style="text-decoration:none;">Projection
+                                    <aura:if isTrue="{!v.secondComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it22" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.secondComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it2" height="30" width="30" />
+                                    </aura:if>
+                               </a>
+                            </li>
+                            
+                        </ul>
+                        <div aura:id="tab1" class="slds-tabs--scoped__content slds-show" role="tabpanel" aria-labelledby="tab-scoped-1__item">
+                            <aura:if isTrue="{!v.firstComp}">
+                                <div aura:id="chart" class="slds-box slds-box--small" style="margin-bottom:10px;" ></div>
+                            </aura:if>
+                        </div>
+
+                        <div aura:id="tab2" class="slds-tabs--scoped__content slds-hide" role="tabpanel" aria-labelledby="tab-scoped-2__item">
+                            <aura:if isTrue="{!v.secondComp}">
+                                <div id="container" aura:id="chart1" class="slds-box slds-box--small" style="margin-bottom:10px;"></div>
+                            </aura:if>
+
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+            
+</aura:component>

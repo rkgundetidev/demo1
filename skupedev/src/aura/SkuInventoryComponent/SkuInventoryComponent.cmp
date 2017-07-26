@@ -1,0 +1,166 @@
+<aura:component controller="SkuInventoryController"  implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+	 
+ <aura:attribute name="SKUResult" type="SkuInventoryController.InventoryDetails"/>
+ <aura:attribute name="InventoryExceptions" type="Inventory__c[]" />
+   
+  
+ <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+<table id="mainTable" class="slds-table slds-table--cell-buffer slds-no-row-hover" >
+  <tr>
+    <td>
+ <table class="slds-table slds-table--cell-buffer slds-no-row-hover table1 cSkuInventoryComponent" >
+  <thead>
+    <tr>
+      <th scope="col">
+        <div align="center"> 
+          <div class="slds-truncate" style="font-size:22px;" >NPI to be Scrapped</div>  
+          <div aura:id="green" style="border-bottom:1px solid #a2cda2; height:1px; padding-top:5px;width: 140%;left: 25%; bottom: -20px;"></div>
+        </div>    
+      </th>
+    </tr>
+  </thead>   
+  <tbody>
+  
+    <tr>    
+      <th scope="row" data-label="Qty" width="100%"> 
+          <div class="slds-truncate" style="font-size:24px;font-weight:bold"> 
+             
+			  <ui:outputNumber value="{!v.SKUResult.ToScrapQty}" format="0"/>
+              <br/>
+          </div>Qty(in CS)
+      </th>
+      <td> 
+          <div class="slds-truncate"  style="font-size:24px;font-weight:bold"> <ui:outputCurrency value="{!v.SKUResult.ToScrapAmt}" format="$0" /><br/></div>Value(in $)
+      </td>            
+    </tr>
+     
+  </tbody>
+</table>
+    </td>
+    <td style="vertical-align: top;">
+    <aura:if isTrue="{!v.InventoryExceptions == null || v.InventoryExceptions.length == 0}">
+       <ui:message severity="info" >
+        No Exception NPI(s) found for this SKU!
+      </ui:message>
+    <aura:set attribute="else">  
+     <table  class="slds-table  slds-table--bordered slds-table--cell-buffer slds-no-row-hover" >
+  <thead>
+     
+    <tr>
+      <th scope="col">       
+          <div class="slds-truncate" ></div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Site #.</div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Batch #</div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Qty (in CS)</div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Value (in $)</div>                    
+      </th>
+    </tr>
+  </thead>    
+  <tbody>  
+     <aura:iteration items="{!v.InventoryExceptions}" var="ie">                 
+               
+    <tr>    
+      <th scope="row" data-label="NPI Identified"> 
+          <div class="slds-truncate">              
+	       <ui:outputText value="NPI Identified" />             
+          </div>
+      </th>
+      <td> 
+          <div class="slds-truncate"> <ui:outputText value="{!ie.Site__c}"  /></div>
+      </td>  
+      <td> 
+          <div class="slds-truncate"> <ui:outputText value="{!ie.Batch_Number__c}"  /></div>
+      </td>  
+      <td> 
+          <div class="slds-truncate"> <ui:outputNumber value="{!ie.Total_Quantity__c}"  /></div>
+      </td> 
+      <td> 
+          <div class="slds-truncate"> <ui:outputNumber value="{!ie.Total_Value__c}"  /></div>
+      </td> 
+
+    </tr> 
+     </aura:iteration>    
+  </tbody>
+   
+</table>
+</aura:set>
+
+   </aura:if>
+    </td>
+ </tr> 
+
+ <tr>
+  <td>
+ <table   class="slds-table slds-table--cell-buffer slds-no-row-hover table2 cSkuInventoryComponent">
+  <thead>
+    <tr>
+      <th scope="col">
+       <div align="center"> 
+        <div class="slds-truncate" style="font-size:22px;" >NPI Scrapped</div>
+        <div aura:id="blue" style="border-bottom:1px solid #66abe6; height:1px; padding-top:5px;width: 140%;left: 25%; bottom: -20px;"></div>
+      </div>    
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" width="100%" >
+          <div class="slds-truncate" style="font-size:24px;font-weight:bold" >
+             
+			  <ui:outputNumber value="{!v.SKUResult.ElimQty}" />
+             <br/>
+          </div>Qty(in CS)
+      </th>
+      <td >
+          <div class="slds-truncate" style="font-size:24px;font-weight:bold"><ui:outputCurrency value="{!v.SKUResult.ElimAmt}" format="$0" /><br/></div>Value(in $)
+      </td>     
+    </tr>
+  </tbody>
+</table>
+
+
+  </td>
+  <td></td>
+ </tr>
+
+ <tr>
+  <td>
+     <table aura:id="table3" class="slds-table slds-table--cell-buffer slds-no-row-hover table3 cSkuInventoryComponent">
+  <thead>
+    <tr>
+      <th scope="col">
+       <div align="center"> 
+        <div class="slds-truncate"  style="font-size:22px;">NPI in Exception</div>
+         <div aura:id="grey" style=" border-bottom:1px solid #6a6d70; height:1px; padding-top:5px;width: 140%;left: 25%; bottom: -20px;"></div>  
+       </div>    
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" width="100%">
+          <div class="slds-truncate" style="font-size:24px;font-weight:bold" ><ui:outputNumber value="{!v.SKUResult.ExcQty}" /><br/></div>Qty(in CS)
+      </th>
+      <td>
+          <div class="slds-truncate" style="font-size:24px;font-weight:bold"><ui:outputCurrency value="{!v.SKUResult.ExcAmt}" format="$0" /><br/></div>Value(in $)
+      </td>     
+    </tr>
+  </tbody>
+</table>
+
+  </td>
+ </tr>
+</table>
+ 
+
+
+</aura:component>

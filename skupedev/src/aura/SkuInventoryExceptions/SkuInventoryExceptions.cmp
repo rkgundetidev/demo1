@@ -1,0 +1,51 @@
+<aura:component controller="SkuInventoryController"  implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+	 <aura:attribute name="InventoryExceptions" type="Inventory__c[]" />
+      <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<table  class="slds-table slds-table--cell-buffer slds-no-row-hover">
+  <thead>
+    <tr>
+      <th scope="col">       
+          <div class="slds-truncate" ></div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Site #.</div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Batch #</div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Qty (in CS)</div>                    
+      </th>
+      <th scope="col">       
+          <div class="slds-truncate" >Value (in $)</div>                    
+      </th>
+    </tr>
+  </thead>   
+  <tbody>  
+     <aura:iteration items="{!v.InventoryExceptions}" var="ie">                 
+               
+    <tr>    
+      <th scope="row" data-label="NPI Identified"> 
+          <div class="slds-truncate">              
+	       <ui:outputText value="NPI Identified" />             
+          </div>
+      </th>
+      <td> 
+          <div class="slds-truncate"> <ui:outputText value="{!ie.Site__c}"  /></div>
+      </td>  
+      <td> 
+          <div class="slds-truncate"> <ui:outputText value="{!ie.Batch_Number__c}"  /></div>
+      </td>  
+      <td> 
+          <div class="slds-truncate"> <ui:outputNumber value="{!ie.Total_Quantity__c}"  /></div>
+      </td> 
+      <td> 
+          <div class="slds-truncate"> <ui:outputNumber value="{!ie.Total_Value__c}"  /></div>
+      </td> 
+
+    </tr> 
+     </aura:iteration>    
+  </tbody>
+</table>
+
+</aura:component>

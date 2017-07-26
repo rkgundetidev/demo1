@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="accordion data" >
+   <!-- <aura:attribute name="SKUS" type="string" />   -->
+    
+</aura:event>

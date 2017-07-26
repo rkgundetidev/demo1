@@ -1,0 +1,6 @@
+<apex:page controller="ClearOutDatedProjections" readOnly="true" sidebar="false" showHeader="false">
+   <apex:pageMessages />
+   <apex:form >
+    	<apex:commandButton value="Clear All Projections Older than today" action="{!clear}"/>
+   </apex:form>
+</apex:page>

@@ -1,0 +1,21 @@
+.THIS.body {
+    margin: 0px;
+    font: 10px;
+}
+
+/*
+.THIS table th,.THIS table td,.THIS.smallfont th, .THIS .smallfont th{
+    padding-top: 0.2em !important;
+    padding-bottom: 0.2em !important;
+}*/
+
+.THIS .slds-table th, .THIS .slds-table.th, .THIS.slds-table th, .THIS.slds-table td{
+    padding-top: 0.4em !important;
+    padding-bottom: 0.4em !important;
+    font-size: 10px;
+}
+
+.THIS .wrapword div, .THIS .wrapword div,.THIS.wrapword div, .THIS.wrapword div{
+    white-space: initial !important;
+    word-break: break-all;
+}

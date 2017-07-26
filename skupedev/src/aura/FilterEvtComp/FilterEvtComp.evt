@@ -1,0 +1,9 @@
+<aura:event type="COMPONENT" description="Event Component" >
+	<aura:attribute name="filters" type="String[]" default="['Aircare']" /> 
+    <aura:attribute name="lCycle" type="String[]" default="['AP']" /> 
+    <aura:attribute name="brand" type="String[]" default="['AllAirCare','ADW','HDW','MrClean','Swiffer']" />
+    <aura:attribute name="rangeStart" type="Date" />
+    <aura:attribute name="rangeEnd" type="Date" />
+    <aura:attribute name="strType" type="String[]" default="['Customized','Non-customized']" />
+    <aura:attribute name="strGBU" type="String" default="Home Care" />
+</aura:event>

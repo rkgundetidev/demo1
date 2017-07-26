@@ -1,0 +1,363 @@
+<aura:component controller="ProjectionReconcileController"    implements="force:appHostable,flexipage:availableForAllPageTypes" access="global"  >
+ <ltng:require styles="{!$Resource.SLDS231 +'/assets/styles/salesforce-lightning-design-system.css'}"/>  
+
+ <aura:attribute name="manualprojections" type="ProjectionReconcileController.SKUDetails[]" access="public"/>
+ <aura:attribute name="manualprojections_data" type="ProjectionReconcileController.SKUDetails[]" access="public"/>
+<aura:attribute name="systemprojections" type="ProjectionReconcileController.SKUDetails[]" access="public"/>
+<aura:attribute name="systemprojections_data" type="ProjectionReconcileController.SKUDetails[]" access="public"/>
+
+<aura:attribute name="systemproj_checkarray" type="String[]" access="public" />
+<aura:attribute name="manualproj_checkarray" type="String[]" access="public" />
+ 
+
+ <aura:attribute name="ptList" type="String[]" default="Disco,New"/>
+ <aura:attribute name="skudetails" type="ProjectionReconcileController.SKUDetails" access="public"/>
+ <aura:attribute name="systemdetails" type="ProjectionReconcileController.SKUDetails" access="public"/>
+ <aura:attribute name="skuids" type="String[]" access="public"/>
+ 
+ 
+
+ <aura:attribute name="manualprojection" type="SKU_Projection__c" access="public"   default="{ 'sobjectType': 'SKU_Projection__c',
+                    
+                    'Brand_Name__c': '',
+                    'Manual_Projected_Date__c': '',
+                    'Projection_Type__c':'Disco',
+                    'SKU_Text__c': '',
+                    'Brand_Code__c': '',
+                    'Description__c': '' }" />
+
+  <aura:attribute name="selectedprojection" type="SKU_Projection__c" access="public"   default="{ 'sobjectType': 'SKU_Projection__c',                    
+                    'Brand_Name__c': '',
+                    'Manual_Projected_Date__c': '',
+                    'Projection_Type__c':'',
+                    'SKU_Text__c': '',
+                    'Brand_Code__c': '',
+                    'Description__c': '' }" />                  
+
+
+  <aura:attribute name="manualinput_page" type="Integer" description="using for store page Number" access="public" default="0"/>
+   <aura:attribute name="manualinput_pages" type="Integer" description="using for store All Pages page Number" access="public" default="0"/>
+   <aura:attribute name="manualinput_total" type="Integer" description="total records count store " access="public" default="0"/>
+   <aura:attribute name="manualinput_pagenumbers" type="integer[]" description="using for store All Page Numbers"/>
+
+   <aura:attribute name="systemdata_page" type="Integer" description="using for store page Number" access="public" default="0"/>
+   <aura:attribute name="systemdata_pages" type="Integer" description="using for store All Pages page Number" access="public" default="0"/>
+   <aura:attribute name="systemdata_total" type="Integer" description="total records count store " access="public" default="0"/>
+   <aura:attribute name="systemdata_pagenumbers" type="integer[]" description="using for store All Page Numbers"/>
+  
+ <aura:attribute name="step" type="String" access="global" default="1" />
+
+ 
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+ 
+      <div class="SLDS">  
+
+    <c:ReconcileModalComponent aura:id="editProjectionmodal" closeAction="{!c.closeProjectionModal}">
+       <aura:set attribute="header"> Edit Projection </aura:set>
+       <aura:set attribute="content">
+           <div class="slds-grid slds-wrap"> 
+             <div class="slds-p-horizontal--small slds-size--1-of-2"> 
+              <ui:inputSelect label="Brand" labelClass="slds-form-element__label" class="slds-select selHeight cProjectionReconcileComponent" value="{!v.selectedprojection.Brand_Name__c}">
+                <ui:inputSelectOption text="All Air Care" label="All Air Care"/>                 
+                <ui:inputSelectOption text="ADW" label="ADW"/>
+                <ui:inputSelectOption text="HDW" label="HDW" />                 
+                <ui:inputSelectOption text="Mr Clean" label="Mr Clean"/> 
+                <ui:inputSelectOption text="Swiffer" label="Swiffer"/>             
+              </ui:inputSelect>
+            </div>
+             <div class="slds-p-horizontal--small slds-size--1-of-2"> 
+                <ui:inputSelect multiple="false" label="Projection Type"  labelClass="slds-form-element__label" class="slds-select selHeight cProjectionReconcileComponent" aura:id="ptype" value="{!v.selectedprojection.Projection_Type__c}" >              
+                <ui:inputSelectOption text="Disco" label="Disco"  />                 
+                    <ui:inputSelectOption text="New" label="New"/>                 
+                </ui:inputSelect>    
+            </div>
+             <div class="slds-p-horizontal--small slds-size--1-of-2"> 
+              <ui:inputDate label="Projection Month" labelClass="slds-form-element__label" class="slds-input" displayDatePicker="true" format="MM/d/y" value="{!v.selectedprojection.Manual_Projected_Date__c}" />
+            </div>
+             <div class="slds-p-horizontal--small slds-size--1-of-2"> 
+              <ui:inputText label="SKU" labelClass="slds-form-element__label" class="slds-input" value="{!v.selectedprojection.SKU_Text__c}" />              
+            </div>
+            <div class="slds-p-horizontal--small slds-size--1-of-2"> 
+              <ui:inputText label="Brandcode" labelClass="slds-form-element__label" class="slds-input" value="{!v.selectedprojection.Brand_Code__c}" />              
+            </div>
+            <div class="slds-p-horizontal--small slds-size--1-of-2"> 
+              <ui:inputText label="Description" labelClass="slds-form-element__label" class="slds-input" value="{!v.selectedprojection.Description__c}" />              
+            </div>
+
+           </div> 
+       </aura:set>
+        <aura:set attribute="footer">     
+            <button class="slds-button slds-button--neutral" onclick="{!c.closeProjectionModal}">Cancel</button>
+            <button class="slds-button slds-button--brand" onclick="{!c.saveRecord}">Ok</button>
+        </aura:set>   
+
+    </c:ReconcileModalComponent>
+
+
+
+      <div class="slds-grid slds-grid_horizontal slds-nowrap slds-size--1-of-1 slds-grid_align-center">
+        <div class= "slds-grid slds-shrink-none">
+            <div class="slds-col">
+                <div class="slds-icon_container slds-align--absolute-center divsku cProjectionReconcileComponent">
+                <p aura-id="skumatch" style="width:40%;"><img  aura:id="img1" src="{!$Resource.One}" style="vertical-align: text-bottom;"/>
+                 Matched on SKUs</p>
+            </div>      
+            </div>
+            <div class="slds-col">          
+                <div class="slds-icon_container slds-align--absolute-center divsku cProjectionReconcileComponent">
+                <p   aura-id="brandcodematch" style="width:40%;"><img aura:id="img2" src="{!$Resource.Two}"  style="vertical-align: text-bottom;"/> 
+                Matched on Brandcode
+                </p>
+                </div>
+             </div>
+             <div class="slds-col">          
+                <div class="slds-icon_container slds-align--absolute-center">
+                 <p  aura-id="othermatch" style="width:45%;"><img aura:id="img3" src="{!$Resource.Three}"  style="vertical-align: text-bottom;"   />
+                 Matched on Brand
+                 </p>
+                </div>
+             </div>                 
+               <br/>
+          
+        </div>
+      </div>
+
+        <div class="slds-grid "  >
+            <div class="slds-col" style="width:50%;">
+                <div class="slds-m-around--medium" style="padding: 2px;">                     
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered table1 cProjectionReconcileComponent">
+                        <thead>
+                            <tr  class="slds-text-title" style="background-color: #f3f3f3;">
+                                <th scope="col" colspan="9" style="text-align:center">    
+                                   <div style="font-size:14px;font-weight: bold; color: black;" >Manual Input</div> 
+                                </th>
+                            </tr>                            
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                                <th scope="col" style="width:4.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div class="slds-text-body_small" style="font-size:10px;">Brand</div>
+                                </th>
+                                <th scope="col" style="width:4.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div  style="font-size:10px;">Projection Type</div>
+                                </th>
+                                <th scope="col" style="width:4.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Projection Month</div>
+                                </th>
+                                <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">SKU</div>
+                                </th>
+                                <th scope="col" style="width:4.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Brandcode</div>
+                                </th>
+                                <th scope="col" style="width:5.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div  style="font-size:10px;">Description</div>
+                                </th>
+                                <th scope="col" style="width:2.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Edit</div>
+                                </th>
+                                <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Delete</div>
+                                </th>
+                                <th scope="col" style="width:8.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Include/ Exclude</div>
+                                </th>                                                                
+                            </tr>
+                        </thead>
+                        <tbody>            
+                        <aura:iteration items="{!v.skudetails}" var="mp" indexVar="index">
+                            <tr>
+                                <th scope="row" data-label="Brand">
+                                    <div class="slds-truncate" title="{!mp.Brand_Name}" style="font-size:10px;">{!mp.Brand_Name}</div>
+                                </th>
+                                
+                                <td data-label="Projection Type">
+                                    <div class="slds-truncate" title="{!mp.Projection_Type}" style="font-size:10px;">{!mp.Projection_Type}</div>
+                                </td>
+                                <td data-label="Projection Month">
+                                    <div class="slds-truncate" title="{!mp.Projected_Date}" style="font-size:10px;">
+                                       <ui:outputDate value="{!mp.Projected_Date}" format="MM/d/y"/> 
+                                    </div>
+                                    
+                                </td>
+                                <td data-label="SKU">
+                                    <div class="slds-truncate" title="{!mp.SKU_Text}" style="font-size:10px;">{!mp.SKU_Text}</div>
+                                </td>
+                                <td data-label="Brandcode">
+                                    <div class="slds-truncate" title="{!mp.Brand_Code}" style="font-size:10px;">{!mp.Brand_Code}</div>
+                                </td>
+                                <td data-label="Description">
+                                    <div class="slds-truncate" title="{!mp.Description}" style="font-size:10px;">{!mp.Description}</div>
+                                </td> 
+                                 
+                                <td>
+                                    <div class="slds-icon_container">  
+                                        <lightning:buttonIcon iconName="utility:edit" size="x-small" alternativeText="edit record"   value="{!mp}" onclick="{!c.editProjection}"/>
+                                        
+                                    </div>
+                                     <a  data-index="{!index}" onmouseover="{!c.display}" onmouseout="{!c.displayOut}" href="javascript:void(0); " >
+                                      <div class="slds-form-element__icon slds-align-middle" >
+                                            <button class="slds-button slds-button slds-button--icon" aria-describedby="SKU Comments" title="{!mp.Comments}" >
+                                                <lightning:icon iconName="utility:info" size="xx-small" alternativeText="" title="{!mp.Comments}"/>
+                                                <span class="slds-assistive-text">SKU Comments</span>
+                                            </button>
+                                        </div>
+                                     </a> 
+                                         <div class="slds-popover slds-popover--tooltip slds-nubbin_bottom-left slds-rise-from-ground toggleoff cProjectionReconcileComponent" role="tooltip"  id="help" style="position: absolute; top: -40px; left: 10px;" aura:id="tooltip_comments{!index}">
+                                            <div class="slds-popover__body">{!mp.Comments}</div>
+                                        </div>
+                                         
+                                       
+                                </td>
+                               
+                                <td>
+                                    <div class="slds-icon_container">  
+                                        <lightning:buttonIcon iconName="utility:delete" size="x-small" alternativeText="Delete record" onclick="{! c.handleDelete }" value="{!mp.Id}"/>
+                                    </div>                 
+
+                                </td>
+                               
+                                
+                                <td data-label="IncludeProjection">
+                                    <div class="slds-truncate" title="{!mp.Include_In_Projections_Manual}">
+                                    <ui:inputCheckbox text="{!mp.Id}" value="{!mp.Include_In_Projections_Manual}" aura:id="checkproj"  />
+                                    
+                                    </div>      
+                                </td>                                
+                                </tr>                                 
+                            </aura:iteration>   
+                                <tr>                                         
+                                    <td colspan="9" style="background-color: #E1EDF9;">
+                                        {!v.manualinput_page} of {!v.manualinput_pages}   ({!v.manualinput_total} Items) &nbsp;
+                                         <button id="btnmanual_back" class="slds-button noborder" data-dir="previous" onclick="{!c.pageDirection}" disabled="{!not( v.manualinput_page > 1)}" title="Previous page">
+                                    <lightning:buttonIcon iconName="utility:chevronleft" size="small" alternativeText="previous page"/>
+                                	</button>
+                                      &nbsp;
+                                      <aura:iteration items="{!v.manualinput_pagenumbers}" var="idx">
+                                        &nbsp;&nbsp;
+                                      <!--  <a value="{!idx}" data-index="{!idx}" onclick= "{!c.pageNum}" href="javascript:void(0);" > {!idx}</a>  -->
+                                        <button id="btnmanual" class="slds-button noborder" text="{!idx}" data-index="{!idx}" onclick="{!c.pageNum}" aura:id="btnmanual" >{!idx}</button>	                                                                    		                                        
+                                    </aura:iteration>
+                                    &nbsp;
+                                    <button id="btnmanual_forward" class="slds-button noborder" data-dir="next" onclick="{!c.pageDirection}" disabled="{!not( v.manualinput_pages > v.manualinput_page)}" title="Next page" >
+                                    <lightning:buttonIcon iconName="utility:chevronright" size="small" alternativeText="next page"/>
+                                	</button>
+                                    </td>     
+                                </tr>           
+                        </tbody>
+                    </table>                     
+                </div>         
+            </div> 
+            
+             <div class="slds-col" style="width:50%;">
+                <div class="slds-m-around--medium" style="padding: 2px;">                     
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered table1 cProjectionReconcileComponent"> 
+                        <thead>
+                           <tr  style="background-color: #f3f3f3;">
+                                <th scope="col" colspan="7" style="text-align:center">    
+                                   <div style="font-size:14px;font-weight: bold; color: black;" >System Data</div> 
+                                </th>
+                            </tr>
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                                   <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div  style="font-size:10px;">Brand</div>
+                                </th>
+                                <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div  style="font-size:10px;">Projection Type</div>
+                                </th>
+                                <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div  style="font-size:10px;">Projection Month</div>
+                                </th>
+                                <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">SKU</div>
+                                </th>
+                                <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Brandcode</div>
+                                </th>
+                                <th scope="col" style="width:4.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Description</div>
+                                </th>                  
+                                
+                                <th scope="col" style="width:6.25rem; font-weight: bold; color: black;" class="slds-cell-wrap breakword cProjectionReconcileComponent" >
+                                  <div style="font-size:10px;">Include/ Exclude</div>
+                                </th> 
+                                                            
+                            </tr>
+                        </thead>
+                        <tbody> 
+                          <aura:iteration items="{!v.systemdetails}" var="mp">
+                            <tr>
+                                <th scope="row" data-label="Brand">
+                                    <div class="slds-truncate" title="{!mp.Brand_Name}" style="font-size:10px;">{!mp.Brand_Name}</div>
+                                </th>
+                                
+                                <td data-label="Projection Type">
+                                    <div class="slds-truncate" title="{!mp.Projection_Type}" style="font-size:10px;">{!mp.Projection_Type}</div>
+                                </td>
+                                <td data-label="Projection Month">
+                                    <div class="slds-truncate" title="{!mp.Projected_Date}" style="font-size:10px;">
+                                       <ui:outputDate value="{!mp.Projected_Date}" format="MM/d/y"/> 
+                                    </div>
+                                </td>
+                                <td data-label="SKU">
+                                    <div class="slds-truncate" title="{!mp.SKU_Text}" style="font-size:10px;">{!mp.SKU_Text}</div>
+                                </td>
+                                <td data-label="Brandcode">
+                                    <div class="slds-truncate" title="{!mp.Brand_Code}" style="font-size:10px;">{!mp.Brand_Code}</div>
+                                </td>
+                                <td data-label="Description">
+                                    <div class="slds-truncate" title="{!mp.Description}" style="font-size:10px;">{!mp.Description}</div>
+                                </td>  
+                            
+                                <td data-label="IncludeProjection">
+                                    <div class="slds-truncate" title="{!mp.Include_In_Projections_Manual}">
+                                    <ui:inputCheckbox text="{!mp.Id}" value="{!mp.Include_In_Projections_Manual}" aura:id="checkprojsystem"  />
+                                    
+                                    </div>      
+                                </td>  
+                                 
+                                                           
+                                </tr>                                 
+                            </aura:iteration>   
+                                <tr>                                         
+                                    <td colspan="7" style="background-color: #E1EDF9;">
+                                      {!v.systemdata_page} of {!v.systemdata_pages} ({!v.systemdata_total} Items) &nbsp;
+                                         <button id="btng11_back" class="slds-button noborder" data-dir="previous" onclick="{!c.pageDirection}" disabled="{!not( v.systemdata_page > 1)}" title="Previous page">
+                                    <lightning:buttonIcon iconName="utility:chevronleft" size="small" alternativeText="previous page"/>
+                                	</button>
+                                      &nbsp;
+                                    <aura:iteration items="{!v.systemdata_pagenumbers}" var="idx">
+                                        &nbsp;&nbsp;
+                                      <!--  <a value="{!idx}" data-index="{!idx}" onclick= "{!c.pageNum}" href="javascript:void(0);" > {!idx}</a>  -->
+                                        <button id="btng11" class="slds-button noborder" text="{!idx}" data-index="{!idx}" onclick="{!c.pageNum}" aura:id="btng11" >{!idx}</button>	                                                                    		                                        
+                                    </aura:iteration>
+                                    &nbsp;
+                                    <button id="btng11_forward" class="slds-button noborder" data-dir="next" onclick="{!c.pageDirection}" disabled="{!not( v.systemdata_pages > v.systemdata_page)}" title="Next page" >
+                                    <lightning:buttonIcon iconName="utility:chevronright" size="small" alternativeText="next page"/>
+                                	</button>
+                                    </td>   
+                                  <div class="slds-spinner_container fixed" aura:id="spinner">
+                                        <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                                            <span class="slds-assistive-text">Processing</span>
+                                            <div class="slds-spinner__dot-a"></div>
+                                            <div class="slds-spinner__dot-b"></div>
+                                        </div>
+                                    </div>
+
+                                   
+                                </tr>  
+                                               
+                                            
+                        </tbody>
+                    </table><br/><br/><br/><br/><br/><br/> <br/>
+                     <div class="slds-col">
+                        <ui:button class="slds-button slds-button--neutral buttoncss cProjectionReconcileComponent" press="{!c.handleSave}" label="Save and Continue" />     
+                        <ui:button class="slds-button slds-button--neutral buttoncss cProjectionReconcileComponent" press="{!c.handleSkip}"  label="Skip" /> 
+                    </div>                     
+                </div>         
+            </div>           
+           </div>
+    </div> 
+  
+ 
+</aura:component>

@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:attribute type="String" name="header" />
+    <aura:attribute type="integer" name="skucount" default="0"/>
+    <aura:attribute name="body" type="Aura.Component[]"/>
+    <aura:attribute name="collpase" type="Boolean" default="true" />
+    
+    <aura:registerEvent name="SkuAccordionevent" type="c:SkuAccordionevent" />
+    <!-- <aura:handler name="FilterAttribute" event="c:FilterEvtComp" action="{!c.collpaseAll}"/>  -->
+    <!-- <aura:handler event="c:FilterEvent" action="{!c.collpaseAll}"/>  -->
+
+    <div  class="SLDS">    
+        <div class="Message"  onclick="{!c.ToggleCollapse}">
+            
+            <div style="width:98%; float:left"> {!v.header} ({!v.skucount})</div>
+            <div class="expandCollapse">
+                <aura:if isTrue="{!v.collpase}"> 
+                    <lightning:icon iconName="utility:chevrondown" size="x-small" variant="bare"/>
+                </aura:if>
+                <aura:if isTrue="{! !v.collpase}">
+                    <lightning:icon iconName="utility:chevronup" size="x-small" variant="bare"/>   
+                </aura:if>
+            </div>
+            
+        </div> 
+            
+        <div class="container hide" aura:id="containerCollapsable">
+                {!v.body}
+        </div>           
+    </div>
+
+</aura:component>

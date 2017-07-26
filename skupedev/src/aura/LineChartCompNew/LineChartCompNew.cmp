@@ -1,0 +1,107 @@
+<aura:component controller="LineChartController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+	<aura:handler event="c:FilterEvent" action="{!c.fetchRecords123}"/>
+	<ltng:require scripts="{!$Resource.HighCharts}" afterScriptsLoaded="{!c.afterScriptsLoaded}"/>
+    <ltng:require scripts="{!$Resource.sheetJS}" />
+    <ltng:require scripts="{!$Resource.myFileSaver}"/>
+	
+    <!-- <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}"/> -->
+	<!-- Actual Data -->
+    <aura:attribute name="lstTHeadWrap" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstFTHeadWrap" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstCatWrapper" type="LineChartController.dataWrapper"/>
+    <aura:attribute name="lstMainProjectionWrapper" type="LineChartController.dataWrapper"/>
+    <aura:attribute name="lstProjectionWrapper" type="LineChartController.dataWrapper"/>
+    <!-- Project Data -->
+    <aura:attribute name="lstTHeadWrapProj" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstCatWrapperProj" type="LineChartController.dataWrapper"/>
+    <!-- <aura:attribute name="lstDynamicData" type="LineChartController.SKUDynamicDataWrapper"/> -->
+    <aura:attribute name="lstSKUs" type="Brand__c[]"/>
+    <aura:attribute name="myMap" type="Map" />
+    
+    <aura:attribute name="renderPopup1" type="Boolean" default="false" />
+    <aura:attribute name="categoryStr" type="String" />
+    <aura:attribute name="monthStr" type="String" />
+    <aura:attribute name="lifecycleStr" type="String" />
+    
+    
+    
+    <!-- <aura:handler event="c:ShowPopupEvt" action="{!c.showOppmodal}"/> -->
+    
+    <div class="SLDS">
+    	
+    	<div class="slds-is-relative">
+            <div id="Accspinner1" style="display:none" class="slds-spinner_container fixed"> <!--class="exampleHolder"-->
+                <!-- <lightning:spinner aura:id="mySpinner1" /> loading -->
+                <div class="slds-backdrop slds-backdrop--open"></div>
+                <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+	                <span class="slds-assistive-text">Processing</span>
+	                <div class="slds-spinner__dot-a"></div>
+	                <div class="slds-spinner__dot-b"></div>
+	            </div>
+	            
+            </div>
+        </div>
+    	<!-- <c:FilterComp /> -->
+        <div aria-hidden="true" role="dialog" class="slds-modal slds-modal--large slds-fade-in-hide" aura:id="modaldialog">
+        	<div class="slds-modal__container">
+	          	<!-- <aura:if isTrue="{!renderPopup1}"> -->
+	          		<div aura:id="popUpContainer">
+	          			<c:ListPopUpComp lstSKUs="{!lstSKUs}" CATEGORY="{v.categoryStr}" MONTH="{!v.monthStr}" lifecycle="{!v.lifecycleStr}" />
+	          		</div>
+				<!-- </aura:if> -->
+			</div>
+        </div>
+  		
+  		
+	    <!-- <div class="slds-backdrop " aura:id="Modalbackdrop"></div> -->
+      <!--Other markups-->
+      <ui:button label="Export to Excel" press="{!c.exportFile}"/>
+      <div class="slds-backdrop slds-backdrop--hide" aura:id="backdrop">
+       </div>
+       
+        <div class="slds-grid" style="padding: 5px;font-size:10px;">
+            <div class="slds-col" style="width:50%;">
+            	<!-- First div has three internal divs(Chart,Actual Data and Projection Data section)  -->
+                <div aura:id="chart" class="slds-box slds-box--small" style="margin-bottom:10px;" ></div>
+                 <!-- Actual Data Table Start-->
+               	<div aura:id="lstCatWrapId">
+                	<aura:if isTrue="{!!empty(v.lstCatWrapper)}">
+                		<c:ListDataTableComp lstTHeadWrap="{!v.lstTHeadWrap}" lstCatWrapper="{v.lstCatWrapper}" actuals="true" pProjections="false" 
+                				fProjections="false" tHeading="Actual" passMethod="{!c.showOppmodal}" />
+                	</aura:if>
+               	</div>
+                <!-- Actual Data Table End-->
+                
+                <!-- Projection Data Table Start-->
+                
+                <div aura:id="lstMainProjWrapId">
+	               	<aura:if isTrue="{!!empty(v.lstMainProjectionWrapper)}">
+	               		<c:ListDataTableComp lstTHeadWrap="{!v.lstTHeadWrap}" lstCatWrapper="{v.lstMainProjectionWrapper}" actuals="false" pProjections="true" 
+	               			fProjections="false" tHeading="Projections" passMethod="{!c.showOppmodal}" />
+	               	</aura:if>
+              	</div>
+                     
+                <!-- Projection Data Table End-->
+            </div>
+            <div class="slds-col" style="width:49%; margin-left:1%">
+                <div id="container" aura:id="chart1" class="slds-box slds-box--small" style="margin-bottom:10px;"></div>
+                <!-- Projection Data Table Start-->
+				<div aura:id="lstProjWrapId">
+	               	<aura:if isTrue="{!!empty(v.lstProjectionWrapper)}">
+	               		<c:ListDataTableComp lstTHeadWrap="{!v.lstFTHeadWrap}" lstCatWrapper="{v.lstProjectionWrapper}" actuals="false" pProjections="false" 
+	               			fProjections="true" tHeading="Projections" passMethod="{!c.showOppmodal}"  />
+	               	</aura:if>
+              	</div>
+                <!-- Projection Data Table End-->
+            </div>
+          <!--<div class="slds-col">Column 3</div>-->
+			
+            
+        </div>
+        
+        
+    </div>
+    
+    
+            
+</aura:component>

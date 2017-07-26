@@ -1,0 +1,178 @@
+<aura:component controller="ManageProjectionsController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+ <ltng:require styles="{!$Resource.SDLS231 +'/assets/styles/salesforce-lightning-design-system.css'}"/>
+ <aura:attribute name="pd" type="Date" default=""/>
+ <aura:attribute name="brandcode" type="String" access="public"/> 
+ <aura:attribute name="manualprojections" type="SKU_Projection__c[]" access="public"/>
+ <aura:attribute name="ptList" type="String[]" default="Disco,New"/>
+ <aura:attribute name="skudetails" type="ManageProjectionsController.SKUDetails" access="public"/>
+ 
+ <aura:attribute name="screen" type="String" default="System Data" access="public" />
+
+
+ <aura:method name="savereconcile" action="{!c.handleUpdate}" />
+ 
+
+ <aura:attribute name="manualprojection" type="SKU_Projection__c" access="public"   default="{ 'sobjectType': 'SKU_Projection__c',
+                    
+                    'Brand_Name__c': '',
+                    'Manual_Projected_Date__c': '', 
+                    'Projection_Type__c':'Disco',
+                    'SKU_Text__c': '',
+                    'Brand_Code__c': '',
+                    'Description__c': '',
+                    'Include_in_Projections_Manual__c':false }" />
+
+
+  <aura:attribute name="page" type="Integer" description="using for store page Number" access="public"/>
+   <aura:attribute name="pages" type="Integer" description="using for store All Pages page Number" access="public"/>
+   <aura:attribute name="total" type="Integer" description="total records count store " access="public"/>
+  
+
+ 
+ <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+  <div class="stage-main slds-grid slds-wrap slds-grow slds-scrollable">
+
+        <div class="slds-shrink-none slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--12-of-12 slds-col-rule--right slds-p-around--large slds-scrollable">
+
+          
+
+ <table class="slds-table slds-table--bordered slds-table_cell-buffer slds-text-body_small" >
+ 
+  <thead>
+    <tr class="slds-text-title--caps">
+      <th scope="col">    
+      <div class="slds-text-body_small" ><strong>{!v.screen}</strong></div>
+      </th>
+    </tr>
+    
+    <tr class="slds-text-body_small">
+      <th scope="col">
+         <div class="slds-text-body_small">Brand</div>
+         <!--
+        <div class="slds-form-element__control">
+            <ui:inputText value="{!v.manualprojection.Brand_Name__c}" class="slds-input" disabled="{!v.screen!='Manual Input'}"  />
+        </div>
+        -->
+      </th>
+      
+      <th scope="col">
+         <div class="slds-text-body_small">Projection Type</div>
+        <!-- 
+        <div class="slds-form-element__control">
+         <ui:inputSelect multiple="false" class="slds-input" aura:id="ptype" value="{!v.manualprojection.Projection_Type__c}" disabled="{!v.screen!='Manual Input'}">              
+                <ui:inputSelectOption text="Disco" label="Disco" value="true"/>                 
+                    <ui:inputSelectOption text="New" label="New"/>                 
+        </ui:inputSelect>    
+        </div>
+        -->
+      </th>
+      <th scope="col">
+         <div class="slds-text-body_small">Projection Month</div>
+         <!--
+        <ui:inputDate aura:id="pdate"  class="slds-input" value="{!v.manualprojection.Manual_Projected_Date__c}" displayDatePicker="true" format="MM/d/y" disabled="{!v.screen!='Manual Input'}" /> 
+        -->
+      </th>
+      <th scope="col">
+       <div class="slds-text-body_small">SKU</div>
+       <!--
+         <div class="slds-form-element__control">
+            <ui:inputText value="{!v.manualprojection.SKU_Text__c}" class="slds-input" change="{!c.skuChange}"  disabled="{!v.screen!='Manual Input'}"  />
+        </div>
+        -->
+      </th>
+      <th scope="col">
+        <div class="slds-text-body_small">Brandcode</div>
+        <!--
+          <div class="slds-form-element__control">
+          <ui:inputText value="{!v.manualprojection.Brand_Code__c}" aura:id="brandcodeinp" class="slds-input" change="{!c.brandcodeChange}" disabled="{!v.screen!='Manual Input'}"/>
+         
+        </div>
+        -->
+      </th>
+      <th scope="col">      
+          <div class="slds-text-body_small">Description</div>
+          <!--
+          <div class="slds-form-element__control">
+          <ui:inputText value="{!v.manualprojection.Description__c}" disabled="{!v.screen!='Manual Input'}" />
+         
+        </div>
+        -->
+      </th>      
+      <aura:renderIf isTrue="{!v.screen!='System Data'}">
+      <th scope="col">          
+        <div class="slds-truncate" title="Description">Delete</div>         
+      </th>
+      </aura:renderIf>     
+       <th scope="col">       
+         <div class="slds-truncate" title="Description">Include/Exclude</div>         
+      </th>     
+    </tr>
+  </thead>
+  
+  <tbody>
+<!-- <aura:iteration items="{!v.manualprojections}" var="mp"> -->
+<aura:iteration items="{!v.skudetails}" var="mp">
+
+   <tr>
+       <th scope="row" data-label="Brand">
+        <div class="slds-truncate" title="{!mp.Brand_Name}">{!mp.Brand_Name}</div>
+      </th>
+      
+      <td data-label="Projection Type">
+        <div class="slds-truncate" title="{!mp.Projection_Type}">{!mp.Projection_Type}</div>
+      </td>
+      <td data-label="Projection Month">
+        <div class="slds-truncate" title="{!mp.Manual_Projected_Date}">{!mp.Manual_Projected_Date}</div>
+      </td>
+      <td data-label="SKU">
+        <div class="slds-truncate" title="{!mp.SKU_Text}">{!mp.SKU_Text}</div>
+      </td>
+      <td data-label="Brandcode">
+        <div class="slds-truncate" title="{!mp.Brand_Code}">{!mp.Brand_Code}</div>
+      </td>
+      <td data-label="Description">
+        <div class="slds-truncate" title="{!mp.Description}">{!mp.Description}</div>
+      </td> 
+        <aura:renderIf isTrue="{!v.screen !='System Data'}">  
+      <td>
+          <div class="slds-icon_container">  
+             <lightning:buttonIcon iconName="utility:delete" size="x-small" alternativeText="Delete record" onclick="{! c.handleDelete }" value="{!mp.Id}"/>
+          </div>
+      </td>
+      </aura:renderIf> 
+      
+       <td data-label="IncludeProjection">
+        <div class="slds-truncate" title="{!mp.Include_In_Projections_Manual}">
+         <ui:inputCheckbox text="{!mp.Include_In_Projections_Manual}" value="{!mp.Include_In_Projections_Manual}" aura:id="checkproj" change="{!c.checkboxselect}" />
+         
+         </div>      
+      </td>
+       
+    </tr>
+   </aura:iteration>
+   <tr>    
+     <td>  
+    <div>
+         <ui:button class="slds-button slds-button--brand" press="{!c.previousPage}" label="Previous Page"/>
+         <ui:button class="slds-button slds-button--brand" press="{!c.nextPage}" label="Next Page"/>
+        
+    </div>      
+     </td> 
+     <td colspan="6" style="text-align:right">
+     <div class="slds-text-title--caps slds-truncate">{!v.total} Records • page {!v.page} / {!v.pages}</div>
+     </td>     
+   </tr>
+  </tbody>
+</table> 
+</div>
+</div>
+   
+<br/> 
+ <aura:renderIf isTrue="{!v.screen=='ManageProjections'}">
+ <div style= "position:relative;float:right;">
+    <ui:button class="slds-button slds-button--brand" press="{!c.handleSave}" label="Save Changes" />     
+    <ui:button class="slds-button slds-button--brand" press="{!c.handleCancel}"  label="Cancel Changes" />   
+  </div>
+  </aura:renderIf>
+</aura:component>

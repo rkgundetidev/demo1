@@ -1,0 +1,1 @@
+<aura:event type="APPLICATION" description="Event that signals that a new manual projection was added" />

@@ -1,0 +1,56 @@
+<aura:component controller="CreateNewSKUWithBrandsCntrl" 
+                implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+                access="global"  >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="objSKURec" type="SKU__c" default="{ 'sobjectType' : 'SKU__c',
+                                                         'Name':'',
+                                                         'SKU_Description__c':'',
+                                                         'Category__c':'',
+                                                         'Dish_Care_Group__c':''}"/>
+    <aura:attribute name="objBrandRec" type="Brand__c" default="{ 'sobjectType' : 'Brand__c',
+                                                                'Projected_Start_Date__c':'',
+                                                               'Projected_Disco_Date__c':''}"/>
+    <article class="slds-card"> 
+    <div class="slds-card__body">    
+    <form class="slds">
+        <fieldset class="slds-form--compound">
+            <div class="form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="skuName">SKU</label>
+                        <ui:inputNumber size="12" maxlength="14" placeholder="Temp-SKU-1234" format="00000000000000" 
+                                        class="slds-input" aura:id="skuName" value="{!v.objSKURec.Name}" />
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="skuDescription"><span style="color:red">*</span>SKU Description</label>
+                        <ui:inputText class="slds-input" aura:id="skuDescription" value="{!v.objSKURec.SKU_Description__c}" />
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <lightning:select name="categoryId" label="Category" aura:id="categoryId" required="true" value="{!v.objSKURec.Category__c}">
+                            <option value="0">Options are loading...</option>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <lightning:select name="groupId" label="Group" aura:id="groupId" required="true" value="{!v.objSKURec.Dish_Care_Group__c}">
+                            <option value="0">Options are loading...</option>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="prjStartDate"><span style="color:red">*</span>Projected Start Date</label>
+                        <ui:inputDate displayDatePicker="true" class="slds-input" aura:id="prjStartDate" value="{!v.objBrandRec.Projected_Start_Date__c}" format="MM/dd/yyyy"/>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="prjDiscoDate"><span style="color:red">*</span>Projected Disco Date</label>
+                        <ui:inputDate displayDatePicker="true" class="slds-input" aura:id="prjDiscoDate" value="{!v.objBrandRec.Projected_Disco_Date__c}" format="MM/dd/yyyy"/>
+                    </div>
+                </div>
+            </div>
+        </fieldset> 
+    </form>
+    </div>
+    <div class="slds-card__footer" style="text-align:center">
+    	<ui:button class="slds-button slds-button--neutral" label="Create New SKU" press="{!c.createSKUWithBrands}"/>
+    </div>
+    </article>
+    <br/>
+</aura:component>

@@ -1,0 +1,15 @@
+.THIS {
+}
+.THIS.table1 {
+    border-spacing: 0;
+    border-color: #ccc;
+    border-left: 1px solid #d8dde6;    
+    border-right: 1px solid #d8dde6;
+    
+    
+  /*  background-color:#5cb85c;
+    color:#fff;    
+    width:40%;
+    border-radius:4px;     
+    border-bottom:1px solid #a2cda2; height:1px; padding-top:5px;*/
+}

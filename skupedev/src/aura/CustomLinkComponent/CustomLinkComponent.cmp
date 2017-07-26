@@ -1,0 +1,5 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="url" type="string"/>
+    <aura:attribute name="label" type="string"/>
+    <ui:outputURL value="{!v.url}" label="{!v.label}" class="mylink"/>
+</aura:component>

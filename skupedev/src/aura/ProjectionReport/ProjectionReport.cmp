@@ -1,0 +1,86 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+                access="global" controller="ProjectionReportController">
+    <ltng:require scripts="{!$Resource.underscore}"/>
+	<aura:attribute name="base" type="Object[]" default="[]"/>
+    <aura:attribute name="projectiondata" type="Object[]" default="[]"/>
+    <aura:attribute name="statuses" type="String[]" default="['Active &amp; Planned','Remnant &amp; Historical']"/>
+    <aura:attribute name="categories" type="String[]" default="['Air Care', 'Dish Care', 'Surface Care']"/>
+    <aura:attribute name="includedcategories" type="String[]" default="['Air Care']"/>
+    <aura:attribute name="projtypes" type="String[]" default="['Base','Non-Customized New SKU','Non-Customized Disco']"/>
+    <aura:attribute name="projtypesfordisplay" type="String[]" default="['Base','Non-Customized New SKUs','Non-Customized Discos']"/>
+    <aura:attribute name="brands" type="String[]" default="['All Air Care','ADW','HDW','Mr Clean','Swiffer']"/>
+    <aura:attribute name="includedbrands" type="String[]" default="['All Air Care']"/>
+    <aura:attribute name="catbrandmap" type="Object[]" default="[{name:'Air Care',brands:['All Air Care']},{name:'Dish Care',brands:['ADW','HDW']},{name:'Surface Care',brands:['Mr Clean','Swiffer']}]"/>
+    <aura:attribute name="includedcatbrandmap" type="Object[]" default="[{name:'Air Care',brands:['All Air Care']},{name:'Dish Care',brands:['ADW','HDW']},{name:'Surface Care',brands:['Mr Clean','Swiffer']}]"/>
+    <aura:attribute name="monthsarr" type="Object[]"/>
+    <aura:attribute name="mnthsValArr" type="String[]"/>
+    <aura:attribute name="mnthStart" type="String"/>
+    <aura:attribute name="mnthEnd" type="String"/>
+    
+    
+    
+    
+    <aura:attribute name="popuptitle" type="String" default="Manage Projections"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:openprojectiondetails" action="{!c.openProjDetails}"/>
+    <aura:registerEvent name="renderdynamic" type="c:renderdynamicvals"/>
+    <aura:handler event="c:NewProjectionAdd" action="{!c.doInit}"/>
+    <aura:registerEvent name="saveoverride" type="c:saveoverride"/>
+    <!--<aura:handler event="c:FilterEvent" action="{!c.handleFilter}"/> -->
+    <aura:handler name="FilterAttribute" event="c:FilterEvtComp" action="{!c.handleFilter}"/> 
+
+    
+    <c:FilterComp1 dishcareBox="false" surfacecareBox="false" aDWBox="false" hDWBox="false" mrCleanBox="false" swifferBox="false" rangeEnd="{!v.mnthEnd}" rangeStart="{!v.mnthStart}" customisedBox="false"/>  
+        
+    
+    
+    <div class="slds-is-relative">
+        <div class="slds-spinner_container fixed" aura:id="spinner">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                <span class="slds-assistive-text">Processing</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+        <div aura:id="thecontainer" class="thecontainer hidden" id="thecontainer">
+            <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open slds-modal--large" >
+            <div class="slds-modal__container modalcontainer">
+                <div class="slds-modal__header">
+                <h2 id="header43" class="slds-text-heading--medium">{!v.popuptitle}</h2>
+                </div>
+                <div class="slds-modal__content slds-p-top--x-large slds-p-around--medium" aura:id="modalbody" id="modalbody">
+                </div><!-- modal -->
+                <div class="slds-modal__footer">
+                    <ui:button class="slds-button slds-button--neutral" label="Save" press="{!c.save}"/>
+                    <ui:button class="slds-button slds-button--neutral" label="Cancel" press="{!c.closeComp}"/>
+                </div>
+            </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+	    </div>  
+
+        <div aura:id="reportcontainer" style="padding: 1rem;">
+            <c:ProjectionReportRenderer monthsarr="{!v.monthsarr}" mnthsValArr="{!v.mnthsValArr}" projectiondata="{!v.projectiondata}" statuses="['Active &amp; Planned']" categories="{!v.categories}" includedcategories="{!v.includedcategories}" projtypes="{!v.projtypes}" projtypesfordisplay="{!v.projtypesfordisplay}" brands="{!v.brands}" includedbrands="{!v.includedbrands}"/>
+        </div>
+
+        <!--
+        <div class="floatmenu">
+            <div class="content">
+                <aura:iteration items="{!v.includedcatbrandmap}" var="catb">
+                    <div>
+                        <ui:inputCheckbox label="{!catb.name}" value="true" change="{!c.filterByCategory}"/>
+                    </div>
+                    <aura:iteration items="{!catb.brands}" var="brand">
+                        <div>
+                            <ui:inputCheckbox label="{!brand}" value="true" change="{!c.filterByBrand}"/>
+                        </div>
+                    </aura:iteration>
+                    <br/><br/>
+                </aura:iteration>
+            </div>
+        </div>
+        -->
+
+       
+    </div>
+</aura:component>

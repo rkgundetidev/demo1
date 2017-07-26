@@ -1,0 +1,4 @@
+<design:component label="Custom Hyperlink">
+    <design:attribute name="url" label="URL" Description="URL that the link should point to" required="true"/>
+    <design:attribute name="label" label="label" Description="Label on the Hyperlink" required="true"/>
+</design:component>

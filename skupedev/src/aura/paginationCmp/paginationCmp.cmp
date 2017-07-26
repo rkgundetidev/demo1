@@ -1,0 +1,160 @@
+<aura:component controller="ProjectionsVsActualsController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+	    <!---Use Salesforce Lightning Design System CSS From Static resources-->   
+    <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}"/>
+    
+    <aura:attribute name="headers" type="string[]" default="Type, Category, SKU, Brand Code, BrandCode Description, Projection Data,OutCome,Delete"/>
+    
+    <aura:attribute name="SKUdata" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="SKU" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="page" type="integer" default="1" description="using for store page Number"/>
+    <aura:attribute name="pages" type="integer" description="using for store All Pages page Number"/>
+    <aura:attribute name="pagenumbers" type="integer[]" description="using for store All Page Numbers"/>
+    <aura:attribute name="total" type="integer" description="total records count store "/>
+    
+    <aura:attribute name="dropCol" type="boolean" default="false" description="To make any of coloumn drop "/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!-- <aura:handler event="c:SkuAccordionevent" action="{!c.handleEvent}"/>    -->
+    
+    <div class="SLDS">
+        <div class="slds-grid" style="padding: 5px;">
+            <div class="slds-col" >
+                <div class="slds-m-around--medium" style="padding: 2px;"> 
+                    
+                    <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--cell-buffer slds-table--col-bordered table1 cSamplePager">
+                        <thead>
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                               
+                                <th scope="col" style="width:18%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="Type">Type</div> 
+                                </th>
+                                <th scope="col" style="width:9%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="Category">Category</div> 
+                                </th>
+                                <th scope="col" style="width:11%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="SKU">SKU</div> 
+                                </th>
+                                <th scope="col" style="width:7%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="Brand Code">BrandCode</div> 
+                                </th>
+                                <aura:if isTrue="{!not(v.dropCol)}">
+                                    <th scope="col" style="width:26%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                        <div class="slds-truncate " title="Brand Description">BrandCode Description</div> 
+                                    </th>                                                                
+                                    <th scope="col" style="width:9%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                        <div class="slds-truncate " title="Projection Data">Projection Date</div> 
+                                    </th>
+                                </aura:if>
+                                <aura:if isTrue="{!(v.dropCol)}">
+                                    <th scope="col" style="width:35%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="Brand Description">BrandCode Description</div> 
+                                	</th>
+                                </aura:if>
+                                    
+                                <th scope="col" style="width:14%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="OutCome">OutCome</div> 
+                                </th>
+                                <th scope="col" style="width:6%; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                    <div class="slds-truncate " title="Delete">Delete</div> 
+                                </th>                           
+                                                                   
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            <aura:iteration items="{!v.SKUdata}" var="sk" indexVar="index">
+                                <tr>
+                                    <td style="width:18%;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!sk.type} </div>
+                                    </td>
+                                    <td style="width:9%;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!sk.category} </div>
+                                    </td>
+                                    <td style="width:11%;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!sk.SKU} </div>
+                                    </td>
+                                    <td style="width:7%;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!sk.BrandCode} </div>
+                                    </td>
+                                    
+                                    <aura:if isTrue="{!not(v.dropCol)}">
+                                        <td style="width:26%; " class="slds-cell-wrap">
+                                            <div class="slds-truncate" title="OPTY"> {!sk.BrandCodeDescription} </div>
+                                        </td>
+                                        
+                                        <td style="width:9%;" class="slds-cell-wrap">
+                                            <aura:if isTrue="{! sk.OutCome != 'Not Projected'}">
+                                                <div class="slds-truncate" title="OPTY"> {!sk.ProjectionData} </div>
+                                            </aura:if>                                            	                                                                                    
+                                        </td>
+                                    </aura:if>
+                                    <aura:if isTrue="{!(v.dropCol)}"> 
+                                        <td style="width:35%; " class="slds-cell-wrap">
+                                            <div class="slds-truncate" title="OPTY"> {!sk.BrandCodeDescription} </div>
+                                        </td>
+                                    </aura:if>
+                                    
+                                    <td style="width:14%;" class="slds-cell-wrap">
+                                        
+                                        <aura:if isTrue="{! sk.color == 'green'}">
+                                            <div class="slds-truncate" style="color:green" title="OPTY"> {!sk.OutCome} </div>
+                                        </aura:if>
+                                         <aura:if isTrue="{! sk.color == 'blue'}">
+                                            <div class="slds-truncate" style="color:blue" title="OPTY"> {!sk.OutCome} </div>
+                                        </aura:if>
+                                         <aura:if isTrue="{! sk.color == 'red'}">
+                                            <div class="slds-truncate" style="color:red" title="OPTY"> {!sk.OutCome} </div>
+                                        </aura:if>
+                                         <aura:if isTrue="{! sk.color == 'black'}">
+                                            <div class="slds-truncate" style="color:black" title="OPTY"> {!sk.OutCome} </div>
+                                        </aura:if>
+                                        
+                                        
+                                    </td>
+                                    <td style="width:6%; text-align: center;" class="slds-cell-wrap" >
+                                        <form class="slds-form-element" onsubmit="{!c.deleteAccount}">
+                                            <div class="slds-form-element__control">
+                                                
+                                                <aura:if isTrue="{!sk.DeleteRecord}">                                                    
+                                                <a value="{!sk.DeleteRecord}" data-index="{!index}" data-recid="{!sk.recId}" onclick= "{!c.deleteRec}" href="javascript:void(0); " >
+                                                    <lightning:icon iconName="utility:delete" size="x-small" alternativeText="Delete record"/>
+                                                </a>    
+                                                </aura:if>
+                                                
+                                            </div>
+                                        </form>                                
+                                    </td>
+                                    
+                                </tr>                
+                            </aura:iteration>  
+                            <tr>
+                                <td colspan="8" style="background-color: #E1EDF9;"> Page {!v.page} of {!v.pages} ({!v.total} Items)
+                                    
+                                    <!-- <lightning:icon iconName="utility:left" size="small" variant="error" />  -->
+                                    &nbsp;
+                                    <button class="slds-button noborder" data-dir="previous" onclick="{!c.PageDirection}" disabled="{!not( v.page > 1)}" title="Previous page">
+                                    <lightning:buttonIcon iconName="utility:chevronleft" size="small" alternativeText="previous page"/>
+                                	</button>
+                                    
+                                    
+                                    <aura:iteration items="{!v.pagenumbers}" var="idx">
+                                        &nbsp;&nbsp;
+                                      <!--  <a value="{!idx}" data-index="{!idx}" onclick= "{!c.pageNum}" href="javascript:void(0);" > {!idx}</a>  -->
+                                        <button class="slds-button noborder" text="{!idx}" data-index="{!idx}" onclick="{!c.pageNum}"  >{!idx}</button>	                                                                    		                                        
+                                    </aura:iteration>
+                                    &nbsp;
+                                    <button class="slds-button noborder" data-dir="next" onclick="{!c.PageDirection}" disabled="{!not( v.pages > v.page)}" title="Next page" >
+                                    <lightning:buttonIcon iconName="utility:chevronright" size="small" alternativeText="next page"/>
+                                	</button>
+                                    
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table> 
+                    
+                </div>         
+            </div>
+        </div>
+    </div>
+    	
+</aura:component>

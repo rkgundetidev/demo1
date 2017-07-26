@@ -1,0 +1,164 @@
+<aura:component controller="ActualVsProjectionController" 
+                implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+                access="global"  >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="lstWrapper" type="ActualVsProjectionController.RowWrapper[]"/>
+    <div aura:id="thecontainer" class="thecontainer hidden" id="thecontainer">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open slds-modal--large" >
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 id="header43" class="slds-text-heading--medium">SKU Information</h2>
+                </div>
+                <div class="slds-modal__content slds-p-top--x-large slds-p-around--medium" aura:id="modalbody" id="modalbody">
+                </div>
+                <div class="slds-modal__footer">
+                    <ui:button class="slds-button slds-button--neutral" label="Cancel" press="{!c.closeComp}"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </div> 
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+    		<header class="slds-media slds-media--center slds-has-flexi-truncate">
+      			<div class="slds-media__figure">
+                	<span class="slds-icon_container slds-icon-standard-contact" title="SKU Simplification Analytics 3">
+                    	<c:svgIcon svgPath="/resource/SLDS/assets/icons/standard-sprite/svg/symbols.svg#report" category="standard" size="medium" name="user" />
+                	</span>
+                </div>
+                <div class="slds-media__body">
+        			<h2>
+          				<a href="javascript:void(0);" class="slds-card__header-link slds-truncate">
+            				<span class="slds-text-heading--small">Comparison results</span>
+          				</a>
+        			</h2>
+      			</div>
+    		</header>
+  		</div>
+        <div class="slds-card__body">
+            <div class="slds-grid">
+                <div class="slds-col slds-box slds-box--x-small slds-truncate" style="width:24%">
+                    <div class="slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Category</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-box slds-box--x-small slds-truncate" style="width:31%">
+                    <div class="slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Projection Type </b>
+                    </div>
+                </div>
+                <div class="slds-col slds-box slds-box--x-small " style="width:15%">
+                    <div class="slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Completed As Planned</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-box slds-box--x-small " style="width:15%">
+                    <div class="slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Unplanned</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-box slds-box--x-small " style="width:15%">
+                    <div class="slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Not Done As Planned</b>
+                    </div>
+                </div>
+            </div>
+            
+            <aura:iteration items="{!v.lstWrapper}" var="objWrapper">
+                <div class="slds-grid">
+                    <div class="slds-col slds-truncate" style="width:24%">
+                        <aura:if isTrue="{!objWrapper.category != ''}">
+                            <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                <aura:if isTrue="{!objWrapper.category == 'Air Care Total' || objWrapper.category == 'Dish Care Total' || objWrapper.category == 'Surface Care Total'}">
+                                    <span style="color:blue;font-weight:bold;">{!objWrapper.category}</span>
+                                    <aura:set attribute="else">
+                                        {!objWrapper.category}
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-text-heading--label slds-box--x-small slds-theme--shade">&nbsp;</div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:31%">
+                        <aura:if isTrue="{!objWrapper.projtype != ''}">
+                            <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                {!objWrapper.projtype}
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-text-heading--label slds-box--x-small slds-theme--shade">&nbsp;</div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:15%">
+                        <aura:if isTrue="{!objWrapper.CmptAsPlan != 0}">
+                            <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                                <aura:if isTrue="{!objWrapper.category == 'Air Care Total' || objWrapper.category == 'Dish Care Total' || objWrapper.category == 'Surface Care Total'}">
+                                    <span style="color:blue;font-weight:bold;">
+                                        <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" click="{!c.displaySKUsforCompleted}"
+                                        value="{!objWrapper.CmptAsPlan}"/>
+                                    </span>
+                                    <aura:set attribute="else">
+                                        <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" click="{!c.displaySKUsforCompleted}"
+                                        value="{!objWrapper.CmptAsPlan}"/>
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                    <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" 
+                                        value="{!objWrapper.CmptAsPlan}"/>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:15%">
+                        <aura:if isTrue="{!objWrapper.unPlan != 0}">
+                            <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                                <aura:if isTrue="{!objWrapper.category == 'Air Care Total' || objWrapper.category == 'Dish Care Total' || objWrapper.category == 'Surface Care Total'}">
+                                    <span style="color:blue;font-weight:bold;">
+                                        <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" click="{!c.displaySKUsforUnplan}"
+                                        value="{!objWrapper.unPlan}"/>
+                                    </span>
+                                    <aura:set attribute="else">
+                                        <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" click="{!c.displaySKUsforUnplan}"
+                                        value="{!objWrapper.unPlan}"/>
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                    <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" 
+                                        value="{!objWrapper.unPlan}"/>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:15%">
+                        <aura:if isTrue="{!objWrapper.NotdoneAsPlan != 0}">
+                            <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                                <aura:if isTrue="{!objWrapper.category == 'Air Care Total' || objWrapper.category == 'Dish Care Total' || objWrapper.category == 'Surface Care Total'}">
+                                    <span style="color:blue;font-weight:bold;">
+                                    <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" click="{!c.displaySKUsforNotCompleted}"
+                                        value="{!objWrapper.NotdoneAsPlan}"/>
+                                    </span>
+                                    <aura:set attribute="else">
+                                        <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" click="{!c.displaySKUsforNotCompleted}"
+                                        value="{!objWrapper.NotdoneAsPlan}"/>
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                    <ui:outputText title="{!objWrapper.projtype}" class="{!objWrapper.cat}" 
+                                        value="{!objWrapper.NotdoneAsPlan}"/>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </div>
+            </aura:iteration>
+        </div>
+    </article>
+</aura:component>

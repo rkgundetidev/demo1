@@ -1,0 +1,174 @@
+<aura:component controller="LineChartController" >
+	<aura:attribute name="lstTHeadWrap" type="LineChartController.headingWrapper"/>
+    <aura:attribute name="lstCatWrapper" type="LineChartController.dataWrapper"/>
+    <aura:attribute name="actuals" type="Boolean" />
+    <aura:attribute name="pProjections" type="Boolean" />
+    <aura:attribute name="fProjections" type="Boolean" />
+    <aura:attribute name="tHeading" type="String" />
+    
+    <aura:handler name="init" action="{!c.init}" value="{!this}" />
+    
+    
+    <aura:registerEvent name="passMethod" type="c:ShowPopupEvt"/>
+    
+    <!-- Actual Data Table Start-->
+    <div class="slds-modal__content slds-p-around--medium" style="padding: 1px;margin-bottom:10px;">
+        <div class="slds-grid">
+          <div class="slds-col">
+              <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered" 
+                   style="border-spacing: 0; border-color: #ccc; border-left: 1px solid #d8dde6; border-right: 1px solid #d8dde6;font-size:10px;">
+                 <thead>
+                    <tr>
+                        <th style="background-color: #d8f9f4; vertical-align: top; white-space: nowrap; text-align: center; height: 31px;">
+
+                        </th>
+                     </tr>
+                </thead>
+                <tbody>
+                    
+                    <aura:if isTrue="{!!empty(v.lstCatWrapper)}">
+                        <aura:iteration var="tD" items="{!v.lstCatWrapper}" >
+                            <tr>
+                                <td>
+                                    <div class="slds-truncate">{!tD.strCategory}</div>
+                                </td>
+                            </tr>
+                            <aura:if isTrue="{!!empty(tD.numActiveMap)}">
+                                <tr>
+                                    <td style="font-weight: bold;">
+                                        <div class="slds-truncate">A &amp; P</div>
+                                    </td>
+                                </tr>
+                            </aura:if>
+                            <aura:if isTrue="{!!empty(tD.numRemnantMap)}">
+                                <tr>
+                                    <td style="font-weight: bold;">
+                                        <div class="slds-truncate">R &amp; H</div>
+                                    </td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                    </aura:if>
+                    <tr>
+                        <th style="background-color: #d8f9f4; color: blue; font-weight: bold;">
+                            {!v.tHeading}
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+
+          </div>
+          <div class="slds-scrollable--x">
+              <div class="slds-scrollable--x">
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered" 
+                           style="border-spacing: 0; border-color: #ccc; border-left: 1px solid #d8dde6; border-right: 1px solid #d8dde6;font-size:10px;">
+                        <thead>
+                        <tr>
+                            
+                            <aura:if isTrue="{!!empty(v.lstTHeadWrap)}">
+                                <aura:iteration var="tH" items="{!v.lstTHeadWrap}" >
+                    
+                                    <th class="tg-yzt1" style="font-weight: bold; background-color: #d8f9f4; vertical-align: top; white-space: nowrap; text-align: center;">
+                                        <!-- <div class="slds-truncate" title="{!tH.strDate}">{!tH.strDate}</div> -->
+                                        <div class="slds-truncate" title="{!tH}">{!tH}</div>
+                                    </th>
+                            
+                                </aura:iteration>
+                            </aura:if>
+                      
+                        </tr>
+                        </thead>
+                        <tbody>
+                    
+                            <aura:if isTrue="{!!empty(v.lstCatWrapper)}">
+                                <aura:iteration var="tD" items="{!v.lstCatWrapper}" >
+                                    <aura:if isTrue="{!!empty(tD.numMap)}">
+                                        <tr style="height: 26px;font-size:10px;">
+                                            <aura:if isTrue="{!!empty(v.lstTHeadWrap)}">
+                                                <aura:iteration var="tH" items="{!v.lstTHeadWrap}" >
+                                                    <td>
+                                                    	<aura:if isTrue="{!v.actuals}">
+	                                                    	<div data-catagory="{!tD.strCategory}" data-status="" data-group="" data-mnth="{!tH}" 
+	                                                     		data-lifecycle="A &amp; P , R &amp; H" onclick="{!c.onChildButtonClick}">
+		                                                     	<a aura:id="mylink" href="javascript:void(0);" style="font-size: 10px;">
+			                                                      	<!-- <c:MonthlySKUMapComp contact="{!tD.numMap}" fieldName="{!tD.strCategory+'~'+tH.strDate}" /> -->
+			                                                      	<c:MonthlySKUMapComp contact="{!tD.numMap}" fieldName="{!tD.strCategory+'~'+tH}" />
+			                                                     </a>
+                                                   			</div>
+                                                   		</aura:if>
+                                                   		<aura:if isTrue="{!v.pProjections}">
+															<c:MonthlySKUMapComp contact="{!tD.numMap}" fieldName="{!tD.strCategory+'~'+tH}" />
+														</aura:if>
+														<aura:if isTrue="{!v.fProjections}">
+															<c:MonthlySKUMapComp contact="{!tD.numMap}" fieldName="{!tD.strCategory+'~'+tH}" />
+														</aura:if>
+                                                    </td>
+                                                </aura:iteration>
+                                            </aura:if>
+                                        </tr>
+                                    </aura:if>
+                                    <aura:if isTrue="{!!empty(tD.numActiveMap)}">
+                                        <tr style="height: 26px;font-size:10px;">
+                                            
+                                            <aura:iteration var="tH" items="{!v.lstTHeadWrap}" >
+                                                <td>
+                                                	<aura:if isTrue="{!v.actuals}">
+	                                                	<div data-catagory="{!tD.strCategory}" data-status="AP" data-group="" data-mnth="{!tH}" 
+	                                                     		data-lifecycle="A &amp; P" onclick="{!c.onChildButtonClick}">
+															<a aura:id="mylink" href="javascript:void(0);" style="font-size: 10px;">
+															<!-- <c:MonthlySKUMapComp contact="{!tD.numActiveMap}" fieldName="{!tD.strCategory+'~A &amp; P~'+tH.strDate}" /> -->
+														    	<c:MonthlySKUMapComp contact="{!tD.numActiveMap}" fieldName="{!tD.strCategory+'~A &amp; P~'+tH}" />
+														    </a>
+														</div>
+													</aura:if>
+													<aura:if isTrue="{!v.pProjections}">
+														<c:MonthlySKUMapComp contact="{!tD.numActiveMap}" fieldName="{!tD.strCategory+'~'+tH}" />
+													</aura:if>
+													<aura:if isTrue="{!v.fProjections}">
+														<c:MonthlySKUMapComp contact="{!tD.numActiveMap}" fieldName="{!tD.strCategory+'~A &amp; P~'+tH}"  />
+													</aura:if>
+                                                </td>
+                                            </aura:iteration>
+                                        </tr>
+                                    </aura:if>
+                                    <aura:if isTrue="{!!empty(tD.numRemnantMap)}">
+                                        <tr style="height: 26px;font-size:10px;">
+                                            
+                                            <aura:iteration var="tH" items="{!v.lstTHeadWrap}" >
+                                                <td>
+                                                
+                                                	<aura:if isTrue="{!v.actuals}">
+	                                                	<div data-catagory="{!tD.strCategory}" data-status="RH" data-group="" data-mnth="{!tH}" 
+	                                                     		data-lifecycle="R &amp; H" onclick="{!c.onChildButtonClick}">
+														      <a aura:id="mylink" href="javascript:void(0);" style="font-size: 10px;">
+														        <!-- <c:MonthlySKUMapComp contact="{!tD.numRemnantMap}" fieldName="{!tD.strCategory+'~R &amp; H~'+tH.strDate}" /> -->
+														        <c:MonthlySKUMapComp contact="{!tD.numRemnantMap}" fieldName="{!tD.strCategory+'~R &amp; H~'+tH}" />
+														    </a>
+														</div>
+													</aura:if>
+													<aura:if isTrue="{!v.pProjections}">
+														<c:MonthlySKUMapComp contact="{!tD.numRemnantMap}" fieldName="{!tD.strCategory+'~'+tH}" />
+													</aura:if>
+													<aura:if isTrue="{!v.fProjections}">
+														<c:MonthlySKUMapComp contact="{!tD.numRemnantMap}" fieldName="{!tD.strCategory+'~R &amp; H~'+tH}" />
+													</aura:if>
+                                                </td>
+                                            </aura:iteration>
+                                        </tr>
+                                    </aura:if>
+                                </aura:iteration>
+                            </aura:if>
+                            <tr>
+                                <th colspan="{!v.lstTHeadWrap.length}" style="background-color:#d8f9f4;">
+                                    
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+          </div>
+        </div>
+        
+        
+    </div>
+</aura:component>

@@ -1,0 +1,204 @@
+<aura:component controller="ActualVsProjectionEstimatesController" 
+                implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+                access="global"  >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="lstWrapper" type="ActualVsProjectionEstimatesController.RowWrapper[]"/>
+    <aura:attribute name="lstProjWrapper" type="ActualVsProjectionEstimatesController.RowWrapper[]"/>
+    <div aura:id="thecontainer" class="thecontainer hidden" id="thecontainer">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open slds-modal--large" >
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 id="header43" class="slds-text-heading--medium">SKU Information</h2>
+                </div>
+                <div class="slds-modal__content slds-p-top--x-large slds-p-around--medium" aura:id="modalbody" id="modalbody">
+                </div>
+                <div class="slds-modal__footer">
+                    <ui:button class="slds-button slds-button--neutral" label="Cancel" press="{!c.closeComp}"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </div>  
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+    		<header class="slds-media slds-media--center slds-has-flexi-truncate">
+      			<div class="slds-media__figure">
+                	<span class="slds-icon_container slds-icon-standard-contact" title="SKU Simplification Analytics 1">
+                    	<c:svgIcon svgPath="/resource/SLDS/assets/icons/standard-sprite/svg/symbols.svg#report" category="standard" size="medium" name="user" />
+                	</span>
+                </div>
+                <div class="slds-media__body">
+        			<h2>
+          				<a href="javascript:void(0);" class="slds-card__header-link slds-truncate">
+            				<span class="slds-text-heading--small">Summary</span>
+          				</a>
+        			</h2>
+      			</div>
+    		</header>
+  		</div>
+        <div class="slds-card__body">	
+            <div class="slds-grid">
+                <div class="slds-col slds-truncate" style="width:29%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Category</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-truncate" style="width:31%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>LifeCycle</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-truncate" style="width:20%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Estimate</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-truncate" style="width:20%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Actual</b>
+                    </div>
+                </div>
+            </div>
+            <aura:iteration items="{!v.lstWrapper}" var="objWrapper">
+                <div class="slds-grid">
+                    <div class="slds-col slds-truncate" style="width:29%">
+                        <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                            {!objWrapper.category}
+                        </div>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:31%">
+                        <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                            {!objWrapper.lfCycle}
+                        </div>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:20%" id="{!objWrapper.category}" onclick="{!c.displaySKUsforEstimates}">
+                        <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                            <a href="javascript:void(0);">{!objWrapper.estimates}</a>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:20%" id="{!objWrapper.category}" onclick="{!c.displaySKUsforactuals}">
+                        <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                            <a href="javascript:void(0);">{!objWrapper.actual}</a>
+                        </div>
+                    </div>
+				</div>
+			</aura:iteration>
+      	</div>
+	</article>
+    <br/>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+    		<header class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                	<span class="slds-icon_container slds-icon-standard-contact" title="SKU Simplification Analytics 2">
+                    	<c:svgIcon svgPath="/resource/SLDS/assets/icons/standard-sprite/svg/symbols.svg#report" category="standard" size="medium" name="user" />
+                	</span>
+                </div>
+      			<div class="slds-media__body">
+        			<h2>
+          				<a href="javascript:void(0);" class="slds-card__header-link slds-truncate">
+            				<span class="slds-text-heading--small">Details</span>
+          				</a>
+        			</h2>
+      			</div>
+    		</header>
+  		</div>
+        <div class="slds-card__body">
+            <div class="slds-grid">
+                <div class="slds-col slds-truncate" style="width:29%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Category</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-truncate" style="width:31%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Projection Type </b>
+                    </div>
+                </div>
+                <div class="slds-col slds-truncate" style="width:20%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Estimate</b>
+                    </div>
+                </div>
+                <div class="slds-col slds-truncate" style="width:20%">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">
+                        <b>Actual</b>
+                    </div>
+                </div>
+            </div>
+            
+            <aura:iteration items="{!v.lstProjWrapper}" var="projWrapper">
+                <div class="slds-grid">
+                    <div class="slds-col slds-truncate" style="width:29%">
+                        <aura:if isTrue="{!projWrapper.category != ''}">
+                            <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                <aura:if isTrue="{!projWrapper.strClr == '408fd5'}">
+                                    <span style="color:blue;font-weight:bold;">{!projWrapper.category}</span>
+                                    <aura:set attribute="else">
+                                        {!projWrapper.category}
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-text-heading--label slds-box--x-small slds-theme--shade">&nbsp;</div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:31%">
+                        <aura:if isTrue="{!projWrapper.lfCycle != ''}">
+                            <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                {!projWrapper.lfCycle}
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-text-heading--label slds-box--x-small slds-theme--shade">&nbsp;</div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:20%">
+                        <aura:if isTrue="{!projWrapper.estimates != 0}">
+                            <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                                <aura:if isTrue="{!projWrapper.strClr == '408fd5'}">
+                                    <span style="color:blue;font-weight:bold;">
+                                        <ui:outputText title="{!projWrapper.lfCycle}" class="{!projWrapper.cat}" click="{!c.displayDetailedSKUsforEstimates}" 
+                                                       value="{!projWrapper.estimates}"/></span>
+                                    <aura:set attribute="else">
+                                        <ui:outputText title="{!projWrapper.lfCycle}" class="{!projWrapper.cat}" click="{!c.displayDetailedSKUsforEstimates}" 
+                                                       value="{!projWrapper.estimates}"/>
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                    <ui:outputText title="{!projWrapper.lfCycle}" class="{!projWrapper.cat}" 
+                                                   value="{!projWrapper.estimates}"/>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-truncate" style="width:20%">
+                        <aura:if isTrue="{!projWrapper.actual != 0}">
+                            <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                                <aura:if isTrue="{!projWrapper.strClr == '408fd5'}">
+                                    <span style="color:blue;font-weight:bold;">
+                                        <ui:outputText title="{!projWrapper.lfCycle}" class="{!projWrapper.cat}" click="{!c.displayDetailedSKUsforActuals}"
+                                                   value="{!projWrapper.actual}"/></span>
+                                    <aura:set attribute="else">
+                                        <ui:outputText title="{!projWrapper.lfCycle}" class="{!projWrapper.cat}" click="{!c.displayDetailedSKUsforActuals}"
+                                                       value="{!projWrapper.actual}"/>
+                                    </aura:set>
+                                </aura:if> 
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-heading--label slds-text-align--center">
+                                    <ui:outputText title="{!projWrapper.lfCycle}" class="{!projWrapper.cat}" 
+                                                   value="{!projWrapper.actual}"/>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </div>
+            </aura:iteration>
+        </div>
+    </article>
+    <br/><br/>  
+</aura:component>

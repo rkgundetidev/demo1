@@ -1,0 +1,80 @@
+.THIS.header {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+  z-index: 1;
+}
+
+ 
+
+.THIS.stage-container {
+  max-height: 100%;
+  overflow: hidden;
+}
+
+/* App specific*/
+.THIS.slds-grid--frame {
+  min-width: 767px;
+  overflow-y: auto;
+}
+
+.THIS.dateFix {  
+  width : 95% !important ;
+} 
+.THIS.selHeight { 
+  height : 2.5em !important ;
+}
+.THIS .selHeight1{    
+height: 2.5em !important;      
+width: 300px !important;      
+margin-top: 5px; 
+}
+.THIS.overflowcss {  
+  overflow-x: none !important;
+  overflow-y: none !important;
+}
+.THIS.skumatch {
+   background:#148CE2;
+}
+.THIS.manual {
+  width :40%;
+}
+.THIS.system {
+  width :40%;
+}
+.THIS.bgcolorcss {
+  background-color:red;
+}
+.THIS.disabled {
+  opacity:0.2;
+}
+.THIS.table1 {
+   table-layout: fixed;
+   white-space:normal;
+    border-spacing: 0;
+    border-color: #ccc;
+    border-left: 1px solid #d8dde6;    
+    border-right: 1px solid #d8dde6;
+}
+.THIS.breakword {
+  white-space:normal;
+}
+.THIS.buttoncss {
+  background-color:#737373;
+  color:white;
+}
+.THIS.boldcss {
+  font-weight:bold;
+}
+.THIS.divsku {
+  width:200px; 
+}
+ 
+ .THIS.toggle {
+   display: none;
+ }
+
+  .THIS.toggleon {
+   display: block;
+ }
+  .THIS.toggleoff {
+   display: none;
+ }

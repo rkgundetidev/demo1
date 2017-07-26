@@ -1,0 +1,20 @@
+.THIS.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+.THIS.tg td{font-family:Arial, sans-serif;padding:1px 1px;border-style:solid;border-width:1px;
+    overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;
+	height: 30px;font-size: 0.75rem; 
+    white-space: nowrap;}
+.THIS.tg th{font-family:Arial, sans-serif;font-size: 0.75rem; font-weight:bold;padding:10px 10px;border-style:solid;
+    border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+.THIS.tg .tg-baqh{text-align:center;vertical-align:top}
+.THIS.tg .tg-yzt1{background-color:#efefef;vertical-align:top;white-space: nowrap; text-align: center;}
+.THIS.tg .tg-lqy6{text-align:right;vertical-align:top}
+.THIS.tg .tg-my2k{background-color:#efefef;text-align:right;vertical-align:top}
+.THIS.tg .tg-yw4l{vertical-align:top;white-space: nowrap;text-align: center;}
+
+.THIS.exampleHolder {  
+  z-index: 10000;
+  position: fixed;   
+}
+.THIS.quadrant{
+margin-bottom:10px;
+}

@@ -1,0 +1,445 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="MonthlySKUScoreCard1">
+	<aura:attribute name="lstHeading" type="MonthlySKUScoreCard1.headingWrapper[]" />
+    <aura:attribute name="lstData" type="MonthlySKUScoreCard1.catWrapper[]" />
+
+    <aura:attribute name="lstdWrapper" type="MonthlySKUScoreCard1.categoryWrapper" access="global"/>
+    <aura:attribute name="grandTotalsMap" type="Map" access="global" default="{}"/>
+    
+    <aura:attribute name="customizeBool" type="Boolean" default="true"/>
+
+    <aura:attribute name="fieldNames" type="String[]" default='["Id","Name","SKU__c","SKU_Description__c","Number_of_Brands__c","Total_Inventory_Count__c"]'/>
+    <aura:attribute name="lstSKUs" type="SKU__c[]"/>
+
+    <aura:attribute name="lstDynamicData" type="MonthlySKUScoreCard1.SKUDynamicDataWrapper"/>
+    <aura:attribute name="dynamicMapFields" type="Map" access="global" default="{}"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="gtotalsMap" type="map" default="" access="global"/>
+    <aura:attribute name="contactLevel" type="String[]" default="Primary Contact, Secondary Contact, Other"/>
+    <aura:attribute name="myBool" type="Boolean" access="GLOBAL" default="true"/>
+    <aura:attribute name="lstOptions" type="List" />
+    <aura:attribute name="catoptions" type="String[]"/>
+    <aura:attribute name="selectedCategories" type="String[]" access="global"/>
+    <aura:attribute name="selSubCategories" type="String[]" access="global"/>
+
+    <aura:attribute name="includedcatbrandmap" type="Object[]" default="[{name:'Air Care',brands:['All Air Care']},{name:'Dish Care',brands:['ADW','HDW']},{name:'Surface Care',brands:['Mr Clean','Swiffer']}]"/>
+    <aura:attribute name="includedcatbrandmap1" type="Object[]" default="[{'name':'Air Care','isSelected':'true','brands':[{'name':'All Air Care','isSelected':'true'}]},{'name':'Dish Care','isSelected':'true','brands':[{'name':'ADW','isSelected':'true'},{'name':'HDW','isSelected':'true'}]},{'name':'Surface Care','isSelected':'true','brands':[{'name':'Mr Clean','isSelected':'true'},{'name':'Swiffer','isSelected':'true'}]}]"/>
+
+    <aura:attribute name="lstcatGroupWrapper" type="MonthlySKUScoreCard1.catGroupWrapper"/>
+    
+
+    <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}"/>
+<div class="SLDS">
+    <!-- PAGE HEADER -->
+    <div class="slds-page-header">
+
+      <!-- LAYOUT GRID -->
+      <div class="slds-grid">
+
+        <!-- GRID COL -->
+        <div class="slds-col slds-has-flexi-truncate">
+          <!-- HEADING AREA -->
+          <p class="slds-text-title--caps slds-line-height--reset">REPORT</p>
+          <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="My Contacts">Home Care Monthly SKU Scorecard</h1>
+          <!-- / HEADING AREA -->
+        </div>
+
+        <!-- ACTION BUTTONS -->
+            <div class="rightSide" data-aura-rendered-by="269:0">
+                <div class="control" data-aura-rendered-by="270:0">
+                
+                
+               </div>
+            </div>
+        <!-- / ACTION BUTTONS -->
+
+      </div>
+      <!-- / LAYOUT GRID -->
+
+      <!-- PAGE HEADER DETAIL ROW -->
+      <!-- / PAGE HEADER DETAIL ROW -->
+
+    </div>
+    <!-- / PAGE HEADER -->
+</div>
+    <div class="SLDS">
+        
+        <div class="slds-is-relative">  
+            <div class="floatmenu">
+                <div class="content">
+                    <br/>
+                    
+                    <aura:iteration items="{!v.includedcatbrandmap1}" var="catb">
+                        <div>
+                            <!--<ui:inputCheckbox label="{!catb.name}" value="true" />-->
+                            <label for="{!catb.name}" class="slds-checkbox">
+                              <input type="checkbox" id="{!catb.name}" checked="{!catb.isSelected}" onclick="{!c.checkboxChange}"/>&nbsp;
+                              <span class="slds-checkbox--faux"></span>
+                              &nbsp;&nbsp;<span class="slds-form-element__label">{!catb.name}</span>
+                            </label>
+                        </div>
+                        <aura:iteration items="{!catb.brands}" var="brand">
+                            <div>
+                                <!--<ui:inputCheckbox label="{!brand}" value="true" />-->
+                               &nbsp;&nbsp;&nbsp; <label for="{!brand.name}" class="slds-checkbox">&nbsp;
+                                  <input type="checkbox" id="{!brand.name}" checked="{!brand.isSelected}" onclick="{!c.checkboxSubChange}"/>&nbsp;
+                                  <span class="slds-checkbox--faux"></span>
+                                  &nbsp;&nbsp;<span class="slds-form-element__label">{!brand.name}</span>
+                                </label>
+                            </div>
+                        </aura:iteration>
+                        <!--<aura:iteration items="{!catb.subBrand}" var="sbrand">
+                            <div>
+                                
+                               &nbsp;&nbsp;&nbsp;&nbsp; <label for="{!sbrand}" class="slds-checkbox">
+                                  <input type="checkbox" id="{!sbrand}" checked="{!v.myBool}" onclick="{!c.checkboxChange}"/>
+                                  <span class="slds-checkbox-faux"></span>
+                                  <span class="slds-form-element__label">{!sbrand}</span>
+                                </label>
+                            </div>
+                        </aura:iteration>-->
+                        <br/><br/>
+                    </aura:iteration>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+     
+        <table class="tg">
+            <thead>
+                <tr>
+                    <th class="tg-lqy6" colspan="2">
+                        <div class="slds-truncate" title="DATE">DATE</div>
+                        
+                    </th>
+                    <aura:if isTrue="{!!empty(v.lstHeading)}">
+                        <aura:iteration var="position" items="{!v.lstHeading}" >
+                            <th class="tg-baqh" colspan="2">
+                                <div class="slds-truncate" style=" font-size: 0.75rem; font-weight:bold; color:blue;" title="{!position.strDate}">{!position.strDate}</div>
+                                
+                            </th>
+                        </aura:iteration>
+                    </aura:if>
+                        
+                </tr>
+                <tr>
+                    <th class="tg-my2k" colspan="2">
+                        <div class="slds-truncate" title="LIFECYCLE">LIFECYCLE</div>
+                        
+                    </th>
+                    <aura:if isTrue="{!!empty(v.lstHeading)}">
+                        <aura:iteration var="position" items="{!v.lstHeading}" >
+                            
+                            <th class="tg-yzt1"><ui:outputText value="{!position.ActiveLifeCycle}"/></th>
+                            <th class="tg-yzt1"><ui:outputText value="{!position.RemnantLifeCycle}"/></th>
+                                        
+                        </aura:iteration>
+                    </aura:if>
+                        
+                </tr>
+                <tr >
+                    
+                    <th class="tg-yw4l">
+                        CATEGORY
+                    </th>
+                    <th class="tg-yw4l">
+                        GROUP
+                    </th>
+                               
+                    <aura:if isTrue="{!!empty(v.lstHeading)}">
+                        <aura:iteration var="position" items="{!v.lstHeading}" >
+                            
+                            <th class="tg-yw4l">
+                                # SKUS
+                            </th>
+                            <th class="tg-yw4l">
+                                # SKUS
+                            </th>
+                                       
+                        </aura:iteration>
+                    </aura:if>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!!empty(v.lstData)}">
+                    <aura:iteration var="C" items="{!v.lstData}" >
+                    <aura:iteration var="hC" items="{!C.dWrapper}" >
+                       <tr>
+                            <td class="tg-yw4l" style="font-size: 0.75rem; font-weight: bold; border-bottom: 0px; text-align: center; vertical-align: middle; padding-top: 10px; padding-left: 5px; padding-right: 5px;">
+                                {!hC.strCategory}
+                                
+                            	
+                            </td>
+                           <td style="padding:0px;">
+                               <table style="width:100%; height:100%;">
+                                   <aura:iteration var="hD" items="{!hC.lstDataWrapper}" >
+                                       <tr>
+                                           <td style="width: 4.2%; text-align:center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                               <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable">
+                                               {!hD.strGroup}
+                                                   </div>
+                                           </td>
+                                       </tr>
+                                   </aura:iteration>
+                               </table>
+                           </td>
+
+                           <!--<td colspan="{!v.lstHeading.length}">
+
+                            </td>-->
+                           <td colspan="{!v.lstHeading.length*2}" style="padding:0px;">
+                           		<table style="width: 100%; height: 100%;">
+                               		<aura:iteration var="hD" items="{!hC.lstDataWrapper}" >
+                                        <tr>
+                                        <aura:iteration var="p" items="{!v.lstHeading}" >
+                                     
+                                            <td class="tg-yw4l" style="width: 4.1%; text-align: center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                                
+                                                <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable" 
+                                                     data-catagory="{!hC.strCategory}" data-status="{!p.ActiveLifeCycle}" data-group="{!hD.strGroup}" data-mnth="{!p.strDate}" 
+                                                     onclick="{!c.showOppmodal}">
+                                                    <a value="{!hC.strCategory}" aura:id="mylink" href="javascript:void(0);" style="font-size: 13px;">
+                                                        <c:MonthlySKUMapComp contact="{!hD.numActiveMap}" fieldName="{!hD.strGroup+p.strDate+p.ActiveLifeCycle}" />
+                                                    </a>
+                                                </div>
+                                                <!--<span data-love="{!hC.strCategory}" data-status="{!p.ActiveLifeCycle}" data-group="{!hD.strGroup}" data-mnth="{!p.strDate}" 
+                                                      onclick="{!c.showOppmodal}"><c:MonthlySKUMapComp contact="{!hD.numActiveMap}" fieldName="{!hD.strGroup+p.strDate+p.ActiveLifeCycle}" />
+                                                </span>-->
+                                            </td>
+                                            <td class="tg-yw4l" style="width: 4.1%; text-align: center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                                
+                                                <div class="slds-box slds-box--x-small slds-theme--alert-texture slds-text-align--center slds-text-heading--label slds-text-link clickable" 
+                                                     data-catagory="{!hC.strCategory}" data-status="{!p.RemnantLifeCycle}" data-group="{!hD.strGroup}" data-mnth="{!p.strDate}" 
+                                                      onclick="{!c.showOppmodal}">
+                                                    <a href="javascript:void(0);" style="font-size: 13px;">
+                                                        <c:MonthlySKUMapComp contact="{!hD.numRemnantMap}" fieldName="{!hD.strGroup+p.strDate+p.RemnantLifeCycle}" />
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </aura:iteration>
+                                            </tr>
+                                    </aura:iteration>
+                               	</table>
+                           </td>
+                           
+                        </tr>
+                        <tr>
+                            <td class="tg-yw4l" style="border-top:0px; text-align:center; vertical-align:top; padding-top:10px; padding-left:5px; padding-right:5px;">
+                                
+                            </td>
+                            <td style="font-size: 0.75rem; font-weight: bold; text-align: center; vertical-align: middle; padding-top: 10px; padding-left: 5px; padding-right: 5px; background-color: #efefef;">
+                                Sub Total
+                            </td>
+                            <td colspan="{!v.lstHeading.length*2}" style="padding: 0px; background-color: #efefef;">
+                                <table style="width: 100%; height: 100%;">
+                                <!--<aura:iteration var="hD" items="{!hC.lstDataWrapper}" >-->
+                                        <tr>
+                                        <aura:iteration var="p" items="{!v.lstHeading}" >
+                                     
+                                            <td class="tg-yw4l" style="font-size: 13px; background-color: #efefef; width: 4.1%; text-align: center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                              
+                                                  <c:MonthlySKUMapComp contact="{!hC.categorySubTotals}" fieldName="{!hC.strCategory+p.strDate+p.ActiveLifeCycle}" />
+                                            </td>
+                                            <td class="tg-yw4l" style="font-size: 13px; background-color: #efefef; width: 4.1%; text-align: center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                                <c:MonthlySKUMapComp contact="{!hC.categorySubTotals}" fieldName="{!hC.strCategory+p.strDate+p.RemnantLifeCycle}" />
+                                            </td>
+                                        </aura:iteration>
+                                            </tr>
+                                    <!--</aura:iteration>-->
+                                </table>
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                    <tr>
+                            <td class="tg-yw4l" style="border-right:0px; background-color: #f0f8fc; border-top: 0px; text-align: center; vertical-align: middle; padding-top: 10px; padding-left: 5px; padding-right: 5px;">
+                                
+                            </td>
+                            <td style="font-size: 0.75rem; font-weight: bold; background-color: #f0f8fc; border-left: 0px; text-align: center; vertical-align: middle; padding-top: 10px; padding-left: 5px; padding-right: 5px; ">
+                                Total
+                            </td>
+                            <td colspan="{!v.lstHeading.length*2}" style="padding: 0px; background-color: #efefef;">
+                                <table style="width: 100%; height: 100%;">
+                                
+                                        <tr>
+                                        <aura:iteration var="p" items="{!v.lstHeading}" >
+                                     
+                                            <td class="tg-yw4l" style="font-size: 13px; background-color: #f0f8fc; width: 4.1%; text-align: center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                                <aura:if isTrue="{!!empty(C.grandTotals)}">
+                                                    <c:MonthlySKUMapComp contact="{!C.grandTotals}" fieldName="{!p.strDate+p.ActiveLifeCycle}" /> 
+                                                </aura:if>
+                                            </td>
+                                            <td class="tg-yw4l" style="font-size: 13px; background-color: #f0f8fc; width: 4.1%; text-align: center; vertical-align: middle; padding-left: 5px; padding-right: 5px;">
+                                                <aura:if isTrue="{!!empty(C.grandTotals)}">
+                                                    <c:MonthlySKUMapComp contact="{!C.grandTotals}" fieldName="{!p.strDate+p.RemnantLifeCycle}" />
+                                                </aura:if>
+                                            </td>
+                                        </aura:iteration>
+                                            </tr>
+                                    
+                                </table>
+                            </td>
+                        </tr>
+                       </aura:iteration> 
+                        <tr>
+                            <!--<td class="tg-yw4l" style="border-right:0px; background-color: #f0f8fc; border-top: 0px; text-align: center; vertical-align: middle; padding-top: 10px; padding-left: 5px; padding-right: 5px;">
+                                
+                            </td>
+                            <td style="font-size: 0.75rem; font-weight: bold; background-color: #f0f8fc; border-left: 0px; text-align: center; vertical-align: middle; padding-top: 10px; padding-left: 5px; padding-right: 5px; ">
+                                
+                            </td>-->
+                            <td colspan="26" style="font-size: 0.75rem; font-weight: bold; padding: 0px; background-color: #efefef; text-align: center; vertical-align: middle;">
+                                A &amp; P - ACTIVE &amp; PLANNED    &nbsp; &nbsp;&nbsp;
+                                R &amp; H- REMNANT &amp; HISTORICAL
+
+                            </td>
+
+                        </tr>
+                </aura:if>
+            </tbody>
+        </table>
+    
+    <div class="SLDS">
+        
+      <div aria-hidden="true" role="dialog" class="slds-modal slds-modal--large slds-fade-in-hide" aura:id="modaldialog">
+          <div class="slds-modal__container">
+                <div class="exampleHolder" style="display:none" id="Accspinner" >
+                    <lightning:spinner aura:id="mySpinner" />
+
+                </div>
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.hideModal}">
+                        <span>
+                            <span class="slds-assistive-text">Close</span>
+                        </span>
+                    </button>
+                    
+                    <form class="slds-form--inline">
+                      <div class="slds-form-element">
+                        <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="CATEGORY">CATEGORY : </label>
+                        <div class="slds-form-element__control">
+                            <label class="slds-form-element__label" style="color: darkblue;" id="CATEGORY">CATEGORY</label>
+                        </div>
+                      </div>
+                      <div class="slds-form-element">
+                        <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="GROUP">GROUP : </label>
+                        <div class="slds-form-element__control">
+                          <label class="slds-form-element__label" style="color: darkblue;" id="GROUP">CATEGORY</label>
+                        </div>
+                      </div>
+                      <div class="slds-form-element">
+                        <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="MONTH">MONTH : </label>
+                        <div class="slds-form-element__control">
+                            <label class="slds-form-element__label" style="color: darkblue;" id="MONTH">CATEGORY</label>
+                        </div>
+                      </div>
+                        <div class="slds-form-element">
+                        <label class="slds-form-element__label" style="font-weight: bold; color: darkblue;" for="STATUS">STATUS : </label>
+                        <div class="slds-form-element__control">
+                          <label class="slds-form-element__label" style="color: darkblue;" id="STATUS">CATEGORY</label>
+                        </div>
+                      </div>
+                    </form>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div>
+                        <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered">
+                          <thead>
+                            <tr class="slds-text-title--caps">
+                              <th scope="col">
+
+                              </th>
+                              
+                                <aura:iteration items="{!v.lstDynamicData.strKey}" var="fName">
+                                    <th>
+                                        <div class="slds-truncate" title="{!fName}">{!fName}</div>
+                                    </th>
+                                </aura:iteration>
+                              
+                                  <!--<th scope="col">
+                                <div class="slds-truncate" title="SKU">SKU</div>
+                              </th>
+                              <th scope="col">
+                                <div class="slds-truncate" title="DESCRIPTION">DESCRIPTION</div>
+                              </th>
+                              <th scope="col">
+                                <div class="slds-truncate" title="NO OF BRANDS">NO OF BRANDS</div>
+                              </th>
+                              <th scope="col">
+                                <div class="slds-truncate" title="INVENTORY">INVENTORY COUNT</div>
+                              </th>-->
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <!--<aura:iteration var="sk" items="{!v.lstSKUs}" indexVar="index">
+                                  <tr>
+                                      <th>
+                                         <div class="slds-truncate" title="SKU"> {!index+1} </div>
+                                      </th>
+                                      <th scope="row" data-label="Opportunity Name">
+                                        <div class="slds-truncate" title="SKU"> {!sk.SKU__c}</div>
+                                      </th>
+                                      <th scope="row" data-label="Opportunity Name">
+                                        <div class="slds-truncate" title="Cloudhub"> {!sk.SKU_Description__c}</div>
+                                      </th>
+                                      <td data-label="Account Name">
+                                        <div class="slds-truncate" title="Cloudhub">{!sk.Number_of_Brands__c}</div>
+                                      </td>
+                                      <td data-label="Close Date">
+                                        <div class="slds-truncate" title="4/14/2015">{!sk.Total_Inventory_Count__c}</div>
+                                      </td>
+                                  </tr>
+                              </aura:iteration>-->
+                            <aura:iteration var="sk" items="{!v.lstDynamicData.lstSKUData}" indexVar="index">
+                               <tr>
+                                   <th>
+                                        <div class="slds-truncate" title="SKU"> {!index+1} </div>
+                                    </th>
+
+                                   <!--<aura:iteration var="p" items="{!v.lstDynamicData.mapSKUFields}" >
+                                     
+                                     <c:MonthlySKUMapComp1 contact="{!v.grandTotalsMap}" fieldName="{!p.strDate+p.RemnantLifeCycle}" />
+                                   </aura:iteration>-->
+                                   <aura:iteration items="{!v.lstDynamicData.strAPIKey}" var="fName">
+                                       <th scope="row" data-label="{!fName}">
+                                            <div class="slds-truncate" title="{!fName}"> 
+                                                <!--{!fName}-->
+                                                <!--<c:MonthlySKUMapComp1 contact="{!v.lstDynamicData.mapSKUFields}" fieldName="{!fName}" />-->
+                                               <c:DynamicFieldRenderer sku="{!sk}" fieldName="{!fName}" />
+                                            </div>
+                                      </th>
+                                       
+                                        
+
+                                    </aura:iteration>
+                                </tr>
+                             </aura:iteration>
+                            
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.hideModal}">Cancel</button>
+                    
+                </div>
+            </div>
+
+      </div>
+  
+      <!--Other markups-->
+  
+      <div class="slds-backdrop slds-backdrop--hide" aura:id="backdrop">
+      
+      </div>
+        
+        <div class="exampleHolder" id="Accspinner1" >
+                    <lightning:spinner aura:id="mySpinner" />
+
+                </div>
+
+        
+    </div>
+</aura:component>

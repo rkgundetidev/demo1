@@ -1,0 +1,9 @@
+.THIS.tablelayout { 
+  table-layout: fixed;
+  width: 616px;
+  white-space: nowrap;
+}
+.THIS.th {
+    
+    white-space:normal;
+}

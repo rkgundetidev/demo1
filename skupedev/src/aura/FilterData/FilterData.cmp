@@ -1,0 +1,98 @@
+<aura:component controller="ProjectionsVsActualsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+	
+    
+    <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}"/>
+    
+    <aura:attribute name="categorylcycle" type="ProjectionsVsActualsController.Table1wrapper[]" />
+    <aura:attribute name="categorylcycleHeaders" type="string[]" default="Category,LifeCycle,Projections,Actuals"/>    
+    <aura:attribute name="categoryPtype" type="ProjectionsVsActualsController.Table2wrapper[]" />
+    <aura:attribute name="categoryPtypeHeaders" type="string[]" default="Category,Projection Type,Projections,Actuals"/>
+    
+    <aura:attribute name="filterLabel" type="map" default="{ Aircare: 'Air Care', Dishcare: 'Dish Care', Surfacecare: 'Surface Care', AP: 'Active &amp; Planned', RH: 'Remnant &amp; Historical',AllAirCare: 'All Air Care',ADW: 'ADW',HDW: 'HDW',MrClean: 'Mr Clean',Swiffer: 'Swiffer', Customized: 'MSO',Non-customized: 'GBU'}" />
+
+
+     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+     <aura:handler event="c:FilterEvent" action="{!c.handleFilterEvent}"/>   
+    
+    <div class="SLDS">
+        <div class="slds-grid " style="padding: 5px;" >
+            <div class="slds-col" style="width:50%;">
+                <div class="slds-m-around--medium" style="padding: 2px;">                     
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered table1 cFilterData">
+                        <thead>
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                                <aura:iteration items="{!v.categorylcycleHeaders}" var="header" indexVar="index">
+                                    <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                        <div class="slds-truncate " title="{!header}">{!header}</div> 
+                                    </th>
+                                </aura:iteration>                                   
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            <aura:iteration items="{!v.categorylcycle}" var="clcy" indexVar="index">
+                                <tr>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.category} </div>
+                                    </td>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.lifeCycle} </div>
+                                    </td>
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.projections} </div>
+                                    </td>
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.actuals} </div>
+                                    </td>                            
+                                </tr>                
+                            </aura:iteration>                      
+                        </tbody>
+                    </table>                     
+                </div>         
+            </div>
+            
+             <div class="slds-col" style="width:50%;">
+                <div class="slds-m-around--medium" style="padding: 2px;">                     
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered table1 cFilterData">
+                        <thead>
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                                <aura:iteration items="{!v.categoryPtypeHeaders}" var="header" indexVar="index">
+                                    <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                        <div class="slds-truncate " title="{!header}">{!header}</div> 
+                                    </th>
+                                </aura:iteration>                                   
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            <aura:iteration items="{!v.categoryPtype}" var="clcy" indexVar="index">
+                                <tr>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.category} </div>
+                                    </td>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.projectionType} </div>
+                                    </td>
+                                    <aura:if isTrue="{! clcy.actuals==98765}">
+                                    <td colspan="2" style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.projections} </div>
+                                    </td>
+                                    </aura:if>
+                                    <aura:if isTrue="{! not(clcy.actuals==98765)}">
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.projections} </div>
+                                    </td>
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="OPTY"> {!clcy.actuals} </div>
+                                    </td>
+                                    </aura:if>
+                                </tr>                
+                            </aura:iteration>                      
+                        </tbody>
+                    </table>                     
+                </div>         
+            </div>           
+            
+        </div>
+    </div>
+</aura:component>

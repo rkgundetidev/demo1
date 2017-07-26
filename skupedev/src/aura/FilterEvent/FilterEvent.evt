@@ -1,0 +1,8 @@
+<aura:event type="APPLICATION" description="Search Event">
+    <aura:attribute name="filters" type="String[]" default="['Aircare']" /> <!-- default="['Aircare','Dishcare','Surfacecare']" -->
+    <aura:attribute name="lCycle" type="String[]" default="['AP']" /> <!-- default="['AP','RH']" -->
+    <aura:attribute name="brand" type="String[]" default="['AllAirCare','ADW','HDW','MrClean','Swiffer']" />
+    <aura:attribute name="rangeStart" type="Date" />
+    <aura:attribute name="rangeEnd" type="Date" />
+    <aura:attribute name="strType" type="String[]" default="['Customized','Non-customized']" />
+</aura:event>

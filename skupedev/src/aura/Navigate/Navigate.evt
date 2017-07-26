@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION">
+	<aura:attribute name="Category" type="String" default=""/>
+    <aura:attribute name="strIntf" type="String" default=""/>
+</aura:event>

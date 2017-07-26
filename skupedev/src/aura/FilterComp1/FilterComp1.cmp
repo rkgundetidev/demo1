@@ -1,0 +1,328 @@
+<aura:component controller="LineChartController1" 
+			implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}" />
+    <!--<aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>-->
+    <aura:attribute name="firstComp" type="Boolean" default="true" />
+    <aura:attribute name="secondComp" type="Boolean" default="false" />
+    <aura:attribute name="thirdComp" type="Boolean" default="false" />
+    <aura:attribute name="forthComp" type="Boolean" default="false" />
+    <aura:attribute name="fifthComp" type="Boolean" default="false" />
+    
+    <aura:attribute name="showForthComp" type="Boolean" default="true" />
+
+    <aura:attribute name="aircareBox" type="Boolean" default="true" />
+    <aura:attribute name="dishcareBox" type="Boolean" default="false" />
+    <aura:attribute name="surfacecareBox" type="Boolean" default="false" />
+
+    <aura:attribute name="allAirCareBox" type="Boolean" default="true" />
+    <aura:attribute name="aDWBox" type="Boolean" default="false" />
+    <aura:attribute name="hDWBox" type="Boolean" default="false" />
+    <aura:attribute name="mrCleanBox" type="Boolean" default="false" />
+    <aura:attribute name="swifferBox" type="Boolean" default="false" />
+	
+	<aura:attribute name="aPBox" type="Boolean" default="true" />
+	<aura:attribute name="rHBox" type="Boolean" default="false" />
+	
+	<aura:attribute name="customisedBox" type="Boolean" default="false" />
+	<aura:attribute name="nonCustomisedBox" type="Boolean" default="true" />
+
+    <aura:attribute name="priority" type="String[]" />
+
+  
+    <!--<aura:handler name="change" value="{!v.rangeStart}" action="{!c.handleStartDateChange}"/>
+    <aura:handler name="change" value="{!v.rangeEnd}" action="{!c.handleEndDateChange}"/>-->
+
+    <aura:attribute name="childAttr" type="String" />
+
+    <aura:attribute name="term" type="String[]" default="['Aircare']" />
+    <aura:attribute name="lCycle" type="String[]" default="['AP']" />
+    <aura:attribute name="brand" type="String[]" default="['AllAirCare']" />
+    <aura:attribute name="rangeEnd" type="Date" />
+    <aura:attribute name="rangeStart" type="Date" />
+    <aura:attribute name="strType" type="String[]" default="['Non-customized']" />
+    <aura:attribute name="strGBU" type="String" default="Home Care" />
+	
+	<aura:handler name="init" action="{!c.init}" value="{!this}" />
+    <!-- <aura:registerEvent name="FilterEvent" type="c:FilterEvent" />  -->
+    <aura:registerEvent name="FilterAttribute" type="c:FilterEvtComp"/>
+    <aura:handler name="change" value="{!v.term}" action="{!c.onChildAttrChange}"/>
+    <aura:handler name="change" value="{!v.childAttr}" action="{!c.onChildAttrChange}"/>
+    <style>
+    	.field1 {
+	        top: 0 !important;
+	        left: 0 !important;
+	        height: 100%;
+	        width: 100%;
+	        margin-top: 0;
+	        -webkit-border-radius: 0;
+	        -moz-border-radius: 0;
+	        border-radius: 0;
+	    }
+    </style>
+    <div class="SLDS">
+        <div class="demo-only slds-grid" style="height: 100%; max-width: 100%; background: #f4f6f9; padding: 1rem; padding-top: 0px;">
+            <div class="slds-panel slds-grid slds-grid_vertical slds-nowrap">
+                <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y">
+                    <!-- HEADING AREA -->
+
+                    <!--<aura:if isTrue="{!!empty(v.primaryRes)}">-->
+                    <!--<c:HeaderComponent/>-->
+                    <!--</aura:if>-->
+                    <div style="margin: 5px 0">Filters</div>
+                    <!-- / HEADING AREA -->
+                    <!--<center><ui:spinner aura:id="spinner"/></center>-->
+                    <!--tab start-->
+                    <!--<aura:if isTrue="{!v.firstComp}">-->
+                    <div class="slds-tabs--scoped">
+                        <ul class="slds-tabs--scoped__nav" role="tablist">
+                            <!--style="background-color: #0070d2;"-->
+                            <li aura:id="t1" class="slds-tabs--scoped__item  slds-active" title="Category" role="presentation" onclick="{!c.tabOneAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-scoped-1" id="tab-scoped-1__item" style="text-decoration:none;">Category
+                                    <aura:if isTrue="{!v.firstComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it1" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.firstComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it11" height="30" width="30" />
+                                        <!-- <lightning:icon iconName="utility:chevronup" size="x-small" variant="bare"/> --> 
+                                    </aura:if>
+                               </a>
+                            </li>
+                            <li aura:id="t2" class="slds-tabs--scoped__item " title="Brand" role="presentation" onclick="{!c.tabTwoAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-2" id="tab-scoped-2__item" style="text-decoration:none;">Brand
+                                    <aura:if isTrue="{!v.secondComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it22" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.secondComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it2" height="30" width="30" />
+                                    </aura:if>
+                               </a>
+                            </li>
+                            <li aura:id="t3" class="slds-tabs--scoped__item " title="Type" role="presentation" onclick="{!c.tabThreeAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="-2" aria-selected="false" aria-controls="tab-scoped-3" id="tab-scoped-3__item" style="text-decoration:none;">Type
+                                    <aura:if isTrue="{!v.thirdComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it33" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.thirdComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it3" height="30" width="30" />
+                                    </aura:if>
+                               </a>
+                            </li>
+                            
+                            <aura:if isTrue="{!v.showForthComp}">
+                            <li aura:id="t4" class="slds-tabs--scoped__item " title="Time Period" role="presentation" onclick="{!c.tabFourAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="-3" aria-selected="false" aria-controls="tab-scoped-4" id="tab-scoped-4__item" style="text-decoration:none;">Time Period
+                                    <aura:if isTrue="{!v.forthComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it44" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.forthComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it4" height="30" width="30" />
+                                    </aura:if>
+                               </a>
+                            </li>
+                            </aura:if>
+                            
+                            <li aura:id="t5" class="slds-tabs--scoped__item " title="LifeCycle" role="presentation" onclick="{!c.tabFiveAction}">
+                                <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab" tabindex="-4" aria-selected="false" aria-controls="tab-scoped-5" id="tab-scoped-5__item" style="text-decoration:none;">LifeCycle
+                                    <aura:if isTrue="{!v.fifthComp}">
+                                        <img src="{!$Resource.DownArrow}" aura:id="it55" height="30" width="30" />
+                                    </aura:if>
+                                    <aura:if isTrue="{!!v.fifthComp}">
+                                        <img src="{!$Resource.UpArrow}" aura:id="it5" height="30" width="30" />
+                                    </aura:if>
+                               </a>
+                            </li>
+                        </ul>
+                        <div aura:id="tab1" class="slds-tabs--scoped__content slds-show" role="tabpanel" aria-labelledby="tab-scoped-1__item">
+                            <aura:if isTrue="{!v.firstComp}">
+                            	<!-- <input type="checkbox" id="Aircare" checked="{!v.aircareBox}" onclick="{!c.checkboxChange}">&nbsp; Air Care</input>
+                            	<input type="checkbox" id="Dishcare" checked="{!v.dishcareBox}" onclick="{!c.checkboxChange}">&nbsp; Dish Care</input>
+                            	<input type="checkbox" id="Surfacecare" checked="{!v.surfacecareBox}" onclick="{!c.checkboxChange}">&nbsp;Surface Care </input> -->
+                            	
+                            	&nbsp;&nbsp;
+                            	<ui:inputCheckbox aura:id="Aircare" name="Aircare" value="{!v.aircareBox}"
+                            			 change="{!c.uicheckboxChange}" class="slds-checkbox"/>&nbsp; Air Care
+                            	&nbsp;&nbsp;
+                            		<ui:inputCheckbox aura:id="Dishcare" name="Dishcare" value="{!v.dishcareBox}"
+                            			 change="{!c.uicheckboxChange}" class="slds-checkbox"/>&nbsp; Dish Care
+                            	&nbsp;&nbsp;		 
+                            		<ui:inputCheckbox aura:id="Surfacecare" name="Surfacecare" value="{!v.surfacecareBox}"
+                            			 change="{!c.uicheckboxChange}" class="slds-checkbox"/>&nbsp; Surface Care
+                            			 
+                            	<!-- <div class="slds-form-element"> -->
+                            		<!-- <ui:inputCheckbox aura:id="Aircare" label="Air Care" value="{!v.aircareBox}"
+                            			 change="{!c.uicheckboxChange}" class="slds-checkbox"/>
+                            		
+                            		<ui:inputCheckbox aura:id="Dishcare" label="Dish Care" value="{!v.dishcareBox}"
+                            			 change="{!c.uicheckboxChange}" class="slds-checkbox"/>
+                            			 
+                            		<ui:inputCheckbox aura:id="Surfacecare" label="Surface Care" value="{!v.surfacecareBox}"
+                            			 change="{!c.uicheckboxChange}" class="slds-checkbox"/> -->
+									
+								<!-- </div> -->
+                            	<!-- <span class="slds-checkbox">
+							      <input type="checkbox" aura:id="Aircare" id="Aircare" checked="{!v.aircareBox}" onclick="{!c.checkboxChange}" />
+							      <label class="slds-checkbox__label" for="Aircare">
+							        <span class="slds-checkbox_faux"></span>
+							        <span class="slds-form-element__label">Air Care</span>
+							      </label>
+							    </span> -->
+							    
+							    <!-- <span class="slds-checkbox">
+							      <input type="checkbox" aura:id="Dishcare" id="Dishcare" checked="{!v.dishcareBox}" onclick="{!c.checkboxChange}" />
+							      <label class="slds-checkbox__label" for="Dishcare">
+							        <span class="slds-checkbox_faux"></span>
+							        <span class="slds-form-element__label">Dish Care</span>
+							      </label>
+							    </span>
+							    
+							    <span class="slds-checkbox">
+							      <input type="checkbox" aura:id="Surfacecare" id="Surfacecare" checked="{!v.surfacecareBox}" onclick="{!c.checkboxChange}" />
+							      <label class="slds-checkbox__label" for="Surfacecare">
+							        <span class="slds-checkbox_faux"></span>
+							        <span class="slds-form-element__label">Surface Care</span>
+							      </label>
+							    </span> -->
+                            	
+                               
+                            </aura:if>
+                        </div>
+
+                        <div aura:id="tab2" class="slds-tabs--scoped__content slds-hide" role="tabpanel" aria-labelledby="tab-scoped-2__item">
+                            <aura:if isTrue="{!v.secondComp}">
+                                <!-- <label for="AllAirCare" class="slds-checkbox">
+                                    <input type="checkbox" id="AllAirCare" checked="{!v.allAirCareBox}" onclick="{!c.brandcheckboxChange}"/>&nbsp;
+                                    <span class="slds-checkbox-faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">All Air Care</span>
+                                </label>
+                                <label for="ADW" class="slds-checkbox">
+                                    <input type="checkbox" id="ADW" checked="{!v.aDWBox}" onclick="{!c.brandcheckboxChange}"/>&nbsp;
+                                    <span class="slds-checkbox-faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">ADW</span>
+                                </label>
+                                <label for="HDW" class="slds-checkbox">
+                                    <input type="checkbox" id="HDW" checked="{!v.hDWBox}" onclick="{!c.brandcheckboxChange}"/>&nbsp;
+                                    <span class="slds-checkbox-faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">HDW</span>
+                                </label>
+                                <label for="MrClean" class="slds-checkbox">
+                                    <input type="checkbox" id="MrClean" checked="{!v.mrCleanBox}" onclick="{!c.brandcheckboxChange}"/>&nbsp;
+                                    <span class="slds-checkbox-faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">Mr Clean</span>
+                                </label>
+                                <label for="Swiffer" class="slds-checkbox">
+                                    <input type="checkbox" id="Swiffer" checked="{!v.swifferBox}" onclick="{!c.brandcheckboxChange}"/>&nbsp;
+                                    <span class="slds-checkbox-faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">Swiffer</span>
+                                </label> -->
+                                
+                                <ui:inputCheckbox aura:id="AllAirCare" name="AllAirCare" value="{!v.allAirCareBox}"
+                            			 change="{!c.brandcheckboxChange}" class="slds-checkbox"/>&nbsp; All Air Care
+                            	&nbsp;&nbsp;
+                            	<ui:inputCheckbox aura:id="ADW" name="ADW" value="{!v.aDWBox}"
+                            			 change="{!c.brandcheckboxChange}" class="slds-checkbox"/>&nbsp; ADW
+                            	&nbsp;&nbsp;		 
+                            	<ui:inputCheckbox aura:id="HDW" name="HDW" value="{!v.hDWBox}"
+                            			 change="{!c.brandcheckboxChange}" class="slds-checkbox"/>&nbsp; HDW
+                            	&nbsp;&nbsp;		 
+                            	<ui:inputCheckbox aura:id="MrClean" name="MrClean" value="{!v.mrCleanBox}"
+                            			 change="{!c.brandcheckboxChange}" class="slds-checkbox"/>&nbsp; Mr Clean
+                            	&nbsp;&nbsp;		 
+                            	<ui:inputCheckbox aura:id="Swiffer" name="Swiffer" value="{!v.swifferBox}"
+                            			 change="{!c.brandcheckboxChange}" class="slds-checkbox"/>&nbsp; Swiffer
+                            			 
+                            </aura:if>
+
+                        </div>
+                        <div aura:id="tab3" class="slds-tabs--scoped__content slds-hide" role="tabpanel" aria-labelledby="tab-scoped-3__item">
+                            <aura:if isTrue="{!v.thirdComp}">
+                                &nbsp;&nbsp;&nbsp;
+                                <label for="Customized" class="slds-checkbox">
+                                    <input type="checkbox" id="Customized" checked="{!v.customisedBox}" onclick="{!c.nonCustomizedChange}"/>&nbsp;
+                                    <span class="slds-checkbox--faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">Customized</span>
+                                </label>
+                                <label for="Non-customized" class="slds-checkbox">
+                                    <input type="checkbox" id="Non-customized" checked="{!v.nonCustomisedBox}" onclick="{!c.nonCustomizedChange}" />&nbsp;
+                                    <span class="slds-checkbox--faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">Non Customized</span>
+                                </label>
+                            </aura:if>
+                        </div>
+                        <div aura:id="tab4" class="slds-tabs--scoped__content slds-hide" role="tabpanel" aria-labelledby="tab-scoped-4__item">
+
+                            <div class="c-container" style="width: 720px;">
+                            	<div class="slds-grid">
+  									<div class="slds-col">
+                            			<div class="slds-form--horizontal">
+									        <div class="slds-form-element">
+									            <label class="slds-form-element__label" style="height: 30px;padding-top: 5px;" for="startDate1">Start Date :</label>
+									            <div class="slds-form-element__control">
+									                
+									                <ui:inputDate aura:id="startDate1" format="MM/yyyy" label="" class="slds-input" 
+		                                        				value="{!v.rangeStart}" displayDatePicker="true" />
+									            </div>
+									        </div>
+								        </div>
+								    </div>
+								    <div class="slds-col">
+								    	<div class="slds-form--horizontal">
+									        <div class="slds-form-element">
+									            <label class="slds-form-element__label" style="height: 30px;padding-top: 5px;" for="endDate1">End Date :</label>
+									            <div class="slds-form-element__control">
+									                <ui:inputDate aura:id="endDate1" format="MM/yyyy" label="" class="slds-input" value="{!v.rangeEnd}" displayDatePicker="true" />
+									                
+									            </div>
+									        </div>
+									    </div>
+								    </div>
+								    <div class="slds-col">
+								        <div class="slds-form-element">
+								        	&nbsp;&nbsp;&nbsp;&nbsp;<ui:button class="btn" label="Fetch" press="{!c.setOutput}" />
+								       	</div>
+								   </div>
+							    </div>
+                                <!-- <lightning:layout horizontalAlign="space">
+                                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                                        Start Date :
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    	
+                                        		<ui:inputDate aura:id="startDate1" format="MM/yyyy" label="" class="slds-input" 
+                                        				value="{!v.rangeStart}" displayDatePicker="true" />
+                                        
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                                        End Date :
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                                        <ui:inputDate aura:id="endDate1" format="MM/yyyy" label="" class="slds-input" value="{!v.rangeEnd}" displayDatePicker="true" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                                        <ui:button class="btn" label="Fetch" press="{!c.setOutput}" />
+                                    </lightning:layoutItem>
+                                </lightning:layout> -->
+                            </div>
+
+                        </div>
+                        <div aura:id="tab5" class="slds-tabs--scoped__content slds-hide" role="tabpanel" aria-labelledby="tab-scoped-5__item">
+                            <aura:if isTrue="{!v.fifthComp}">
+                                &nbsp;&nbsp;&nbsp;
+                                <label for="AP" class="slds-checkbox">
+                                    <input type="checkbox" id="AP" checked="{!v.aPBox}" onclick="{!c.lCChange}"/>&nbsp;
+                                    <span class="slds-checkbox--faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">A &amp; P</span>
+                                </label>
+                                <label for="RH" class="slds-checkbox">
+                                    <input type="checkbox" id="RH" checked="{!v.rHBox}" onclick="{!c.lCChange}" />&nbsp;
+                                    <span class="slds-checkbox--faux"></span>
+                                    &nbsp;&nbsp;<span class="slds-form-element__label">R &amp; H</span>
+                                </label>
+                            </aura:if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>

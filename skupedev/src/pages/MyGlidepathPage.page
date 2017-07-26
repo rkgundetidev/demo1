@@ -1,0 +1,15 @@
+<apex:page >
+	<apex:includeScript value="/lightning/lightning.out.js" />
+	<div id="lightning" />
+
+    <script>
+        $Lightning.use("c:LineChartApp", function() {
+          $Lightning.createComponent("c:MyGlidepathComp",
+          { label : "" },
+          "lightning",
+          function(cmp) {
+            // do some stuff
+          });
+        });
+    </script>
+</apex:page>

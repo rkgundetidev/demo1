@@ -1,0 +1,64 @@
+<aura:component >
+	
+    <aura:attribute name="monthsarr" type="Object[]"/>
+    <aura:attribute name="mnthsValArr" type="String[]"/>
+    <aura:attribute name="projectiondata" type="Object[]" default="[]"/>
+    <aura:attribute name="statuses" type="String[]" default="['Active &amp; Planned','Remnant &amp; Historical']"/>
+    <aura:attribute name="categories" type="String[]" default="['Air Care', 'Dish Care', 'Surface Care']"/>
+    <aura:attribute name="includedcategories" type="String[]" default="['Air Care', 'Dish Care', 'Surface Care']"/>
+    <aura:attribute name="projtypes" type="String[]" default="['Base','Non-Customized New SKU','Non-Customized Disco','Customized New SKU','Customized Disco']"/>
+    <aura:attribute name="projtypesfordisplay" type="String[]" default="['Base','Non-Customized New SKUs','Non-Customized Discos','Customized New SKUs','Customized Discos']"/>
+    <aura:attribute name="brands" type="String[]" default="['All Air Care','ADW','HDW','Mr Clean','Swiffer']"/>
+    <aura:attribute name="includedbrands" type="String[]" default="['ADW','All Air Care','HDW','Mr Clean','Swiffer']"/>
+    
+    <div class="slds-grid slds-grid--frame slds-grid--pull-padded slds-scrollable--x">
+    
+        <!--<div class="{!' slds-size_1-of-'+(v.monthsarr.length+1)}">-->
+            <div class="slds-size_1-of-13">
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--left slds-text-heading--label col1 bold">&nbsp;</div>
+                </div>
+                <aura:iteration items="{!v.includedcategories}" var="cat">
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--left slds-text-heading--label col2 bold">{!cat}</div>
+                    </div>
+                        <aura:iteration items="{!v.statuses}" var="sts" >
+                            <div class="slds-col slds-size_1-of-1">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--left slds-text-heading--label col3 bold">{!sts}</div>
+                            </div>
+                            <aura:iteration items="{!v.projtypesfordisplay}" var="ptype">
+                                <aura:if isTrue="{!sts!='Remnant &amp; Historical'|| ptype=='Customized Discos' || ptype=='Non-Customized Discos' || ptype=='Base'}">
+                                    <div class="slds-size_1-of-1">
+                                        <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--left slds-text-heading--label">{!ptype}</div>
+                                    </div>
+                                </aura:if>
+                            </aura:iteration>
+                        </aura:iteration>
+                </aura:iteration>
+            </div>
+
+            <aura:iteration items="{!v.monthsarr}" var="mnth" indexVar="i">
+                <!--<div class="{!' slds-size_1-of-'+(v.monthsarr.length+1)}">-->
+                <div class="slds-size_1-of-13">
+                   <div class="slds-col slds-size_1-of-1">
+                                <div class="slds-box slds-box--x-small slds-theme--shade slds-text-align--center slds-text-heading--label col1 bold">{!mnth.label}</div>
+                    </div>
+                    <div aura:id="containerdiv">
+                        <aura:iteration items="{!v.includedcategories}" var="cat">
+                            <c:dynamicfieldbinding reportdata="{!v.projectiondata}" cat="{!cat}" mnth="{!mnth.val}" projtype="Base" calctype="total"/>
+                                <aura:iteration items="{!v.statuses}" var="sts">
+                                    <c:dynamicfieldbinding reportdata="{!v.projectiondata}" cat="{!cat}" sts="{!sts}" projtype="Base" mnth="{!mnth.val}" calctype="ststotal"/>
+                                    <aura:iteration items="{!v.projtypes}" var="ptype">
+                                        <aura:if isTrue="{!sts!='Remnant &amp; Historical'|| ptype=='Customized Disco' || ptype=='Non-Customized Disco' || ptype=='Base'}">
+                                            <c:dynamicfieldbinding reportdata="{!v.projectiondata}" cat="{!cat}" sts="{!sts}" projtype="{!ptype}" mnth="{!mnth.val}"/>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </aura:iteration>
+                        </aura:iteration>
+                    </div>
+                </div>
+            </aura:iteration>
+       </div>
+
+    
+</aura:component>

@@ -1,0 +1,36 @@
+<aura:component controller="ProjectionsVsActualsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+    <aura:attribute name="newSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="newSKUcount" type="integer" default="0"/>
+    <aura:attribute name="discSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="discSKUcount" type="integer" default="0"/>
+	<aura:attribute name="incorrectNewSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="incorrectNewSKUcount" type="integer" default="0"/>
+	<aura:attribute name="incorrectDiscSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="incorrectDiscSKUcount" type="integer" default="0"/>
+    <aura:attribute name="noChangeSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="noChangeSKUcount" type="integer" default="0"/>
+       
+
+    <aura:attribute name="filterLabel" type="map" default="{ Aircare: 'Air Care', Dishcare: 'Dish Care', Surfacecare: 'Surface Care', AP: 'Active &amp; Planned', RH: 'Remnant &amp; Historical',AllAirCare: 'All Air Care',ADW: 'ADW',HDW: 'HDW',MrClean: 'Mr Clean',Swiffer: 'Swiffer',Customized: 'MSO',Non-customized: 'GBU'}" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="c:FilterEvent" action="{!c.handleFilterEvent}"/> 
+    
+    <c:CollapsiblePanel header="New SKUs" skucount="{!v.newSKUcount}" >
+        <c:paginationCmp SKU="{!v.newSKUs}"/>
+    </c:CollapsiblePanel>  
+    <c:CollapsiblePanel header="Discontinued SKUs" skucount="{!v.discSKUcount}">
+        <c:paginationCmp SKU="{!v.discSKUs}" />
+    </c:CollapsiblePanel> 
+    <c:CollapsiblePanel header="Incorrect New SKU Projections" skucount="{!v.incorrectNewSKUcount}">
+        <c:paginationCmp SKU="{!v.incorrectNewSKUs}"/>
+    </c:CollapsiblePanel> 
+    <c:CollapsiblePanel header="Incorrect Discontinued SKU Projections" skucount="{!v.incorrectDiscSKUcount}">
+        <c:paginationCmp SKU="{!v.incorrectDiscSKUs}"/>
+    </c:CollapsiblePanel> 
+    <c:CollapsiblePanel header="SKUs with NO CHANGES" skucount="{!v.noChangeSKUcount}">
+        <c:paginationCmp SKU="{!v.noChangeSKUs}" dropCol="true"/>
+    </c:CollapsiblePanel> 
+    
+</aura:component>

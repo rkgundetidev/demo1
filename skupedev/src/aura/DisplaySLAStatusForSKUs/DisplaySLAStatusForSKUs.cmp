@@ -1,0 +1,67 @@
+<aura:component controller="DisplaySLAStatusForSKUs" 
+                implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+                access="global"  >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="strCat" type="String" default=""/>
+    <aura:attribute name="strIntf" type="String" default=""/>
+    <aura:attribute name="prjType" type="String" default=""/>
+	<aura:attribute name="lstSKU" type="SKU__c[]"/>
+	<div class="slds-grid slds-col--padded-around slds-theme--shade">
+        <div class="slds-col slds-col-rule--bottom" style="width:20%">
+            <div class="slds-text-align--left slds-col--padded">
+                <b>SKU</b>
+            </div>
+        </div>
+        <div class="slds-col slds-col-rule--bottom" style="width:20%">
+            <div class="slds-text-align--left">
+                <b>Description</b>
+            </div>
+        </div>
+        <div class="slds-col slds-col-rule--bottom" style="width:20%">
+            <div class="slds-text-align--center">
+                <b>Category</b>
+            </div>
+        </div>
+        <div class="slds-col slds-col-rule--bottom" style="width:20%">
+            <div class="slds-text-align--center">
+                <b>Projected Start Date</b>
+            </div>
+        </div>
+        <div class="slds-col slds-col-rule--bottom" style="width:20%">
+            <div class="slds-text-align--center">
+                <b>Projected Disco Date</b>
+            </div>
+        </div>
+    </div>
+    <div>
+        <aura:iteration items="{!v.lstSKU}" var="objSKU">
+            <div class="slds-grid slds-col--padded-around " style="background-color:#e3f3ff">
+                <div class="slds-col slds-col-rule--bottom" style="width:20%">
+                    <div class="slds-text-align--left slds-col--padded">
+                        {!objSKU.Name}
+                    </div>
+                </div>
+                <div class="slds-col slds-col-rule--bottom" style="width:20%">
+                    <div class="slds-text-align--left">
+                        {!objSKU.SKU_Description__c}
+                    </div>
+                </div>
+                <div class="slds-col slds-col-rule--bottom" style="width:20%">
+                    <div class="slds-text-align--center">
+                        {!objSKU.Category__c}
+                    </div>
+                </div>
+                <div class="slds-col slds-col-rule--bottom" style="width:20%">
+                    <div class="slds-text-align--center">
+                        <ui:outputDate value="{!objSKU.Projected_Start_Date__c}" format="MM/dd/yyyy"/> 
+                    </div>
+                </div>
+                <div class="slds-col slds-col-rule--bottom" style="width:20%">
+                    <div class="slds-text-align--center">
+                        <ui:outputDate value="{!objSKU.Projected_Disco_Date__c}" format="MM/dd/yyyy"/> 
+                    </div>
+                </div>
+            </div>
+        </aura:iteration>
+    </div>
+</aura:component>

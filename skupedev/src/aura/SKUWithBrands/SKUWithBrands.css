@@ -1,0 +1,8 @@
+.THIS .noborder{
+    border:none;
+    background: rgba(0,0,0,0);
+}
+
+.THIS .hidden, .THIS.hidden{
+    display: none;
+}

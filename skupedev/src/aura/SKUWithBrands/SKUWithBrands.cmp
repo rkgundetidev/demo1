@@ -1,0 +1,241 @@
+<aura:component controller="SKUsWithBrandDetails" 
+                implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+                access="global"  >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="lstWrapper" type="SKUsWithBrandDetails.SKUBrandWrapper[]"/>
+    
+    <aura:attribute name="projType" type="String" default=""/>
+    <aura:attribute name="skuids" type="String[]" default="[]"/>
+    
+    <aura:handler event="c:saveoverride" action="{!c.Save}"/>
+    
+    <div class="slds-is-relative">
+        <div class="slds-spinner_container" aura:id="spinner">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large" role="alert">
+                <span class="slds-assistive-text">Processing</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+        <c:CreateNewSKUWithBrands />
+        <div class="slds-grid slds-theme--shade">
+            <div class="slds-col" style="width:4%">
+                <div class="slds-text-align--left">
+                    <b>&nbsp;</b>
+                </div>
+            </div>
+            <div class="slds-col" style="width:11%">
+                <div class="slds-text-align--left">
+                    <b>SKU</b>
+                </div>
+            </div>
+            <div class="slds-col" style="width:23%">
+                <div class="slds-text-align--left">
+                    <b>SKU Description</b>
+                </div>
+            </div>
+            <div class="slds-col" style="width:10%">
+                <div class="slds-text-align--left">
+                    <b>Category</b>
+                </div>
+            </div>
+            <div class="slds-col" style="width:12%">
+                <div class="slds-text-align--left">
+                    <b>Group</b>
+                </div>
+            </div>
+            <div class="slds-col" style="width:12%">
+                <div class="slds-text-align--left">
+                    <b>Lifecycle</b>
+                </div>
+            </div>	
+            <div class="slds-col" style="width:12%">
+                <div class="slds-text-align--left">
+                    <aura:if isTrue="{!(v.projType == 'Non-Customized New SKU' || v.projType == 'Customized New SKU')}">
+                        <b>Projected Start Date</b>
+                        <aura:set attribute="else">
+                            <b>Projected Disco Date</b>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+            <div class="slds-col" style="width:17%">
+                <div class="slds-text-align--left">
+                    <b>&nbsp;</b>
+                </div>
+            </div>
+        </div>
+        <aura:iteration items="{!v.lstWrapper}" var="objWrapper">
+            <div class="slds-grid">
+                <div class="slds-grid" style="width:4%">
+                    <div class="slds-col noborder" style="text-align:left;">
+                        <aura:if isTrue="{!objWrapper.lstBrand != null}">
+                            <div style="display:block;" aura:id="{!'Plus'+objWrapper.objSKU.Id}" id="{!'Plus'+objWrapper.objSKU.Id}">
+                                <button class="slds-button noborder" aura:id="{!objWrapper.objSKU.Id}" id="{!objWrapper.objSKU.Id}" onclick="{!c.showHidePanel}">
+                                    <lightning:buttonIcon iconName="utility:chevronright" size="small" alternativeText="Show Products"/>
+                                </button>
+                            </div>
+                            <div style="display:none;" aura:id="{!'Minus'+objWrapper.objSKU.Id}" id="{!'Minus'+objWrapper.objSKU.Id}">
+                                <button class="slds-button noborder" aura:id="{!objWrapper.objSKU.Id}" id="{!objWrapper.objSKU.Id}" onclick="{!c.showHidePanel}">
+                                    <lightning:buttonIcon iconName="utility:chevrondown" size="small" alternativeText="Hide Products"/>
+                                </button>
+                            </div>
+                        </aura:if>   
+                    </div>
+                </div>
+                <div class="slds-col" style="width:11%">
+                    <div class="slds-text-align--left">
+                        <ui:outputText value="{!objWrapper.objSKU.Name}"/>
+                    </div>
+                </div>
+                <div class="slds-col" style="width:23%">
+                    <div class="slds-text-align--left">
+                        <ui:outputTextArea value="{!objWrapper.objSKU.SKU_Description__c}"/>
+                    </div>
+                </div>
+                <div class="slds-col" style="width:10%">
+                    <div class="slds-text-align--left">
+                        <ui:outputText value="{!objWrapper.objSKU.Category__c}"/>
+                    </div>
+                </div>
+                <div class="slds-col" style="width:12%">
+                    <div class="slds-text-align--left">
+                        <ui:outputText value="{!objWrapper.objSKU.Dish_Care_Group__c}"/>
+                    </div>
+                </div>
+                <div class="slds-col" style="width:12%">
+                    <div class="slds-text-align--left">
+                        <ui:outputText value="{!objWrapper.objSKU.Status__c}"/>
+                    </div>
+                </div>
+                <div class="slds-col" style="width:12%">
+                    <div class="slds-text-align--left">
+                        <aura:if isTrue="{!(v.projType == 'Non-Customized New SKU' || v.projType == 'Customized New SKU')}">
+                            <ui:outputDate value="{!objWrapper.objSKU.Projected_Start_Date__c}" format="MM/dd/yyyy"/>
+                            <aura:set attribute="else">
+                                <ui:outputDate value="{!objWrapper.objSKU.Projected_Disco_Date__c}" format="MM/dd/yyyy"/>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-col" style="width:17%">
+                <div class="slds-text-align--left">
+                    <b>&nbsp;</b>
+                </div>
+            </div>
+            </div>
+            <div aura:id="{!'Brands'+objWrapper.objSKU.Id}" id="{!'Brands'+objWrapper.objSKU.Id}" style="display:none;">
+                <aura:if isTrue="{!objWrapper.lstBrand != null}">
+                    <div class="slds-grid slds-theme--shade">
+                        <div class="slds-col" style="width:4%">
+                            <div class="slds-text-align--left">
+                                <b>&nbsp;</b>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:11%">
+                            <div class="slds-text-align--left">
+                                <b>Brand Code</b>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:23%">
+                            <div class="slds-text-align--left">
+                                <b>Brand Description</b>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:10%">
+                            <div class="slds-text-align--left">
+                                <b>Type</b>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:12%">
+                            <div class="slds-text-align--left">
+                                <b>Lifecycle</b>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:12%">
+                            <div class="slds-text-align--left">
+                                <b>EOH Inventory</b>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:12%">
+                            <div class="slds-text-align--left">
+                                <aura:if isTrue="{!(v.projType == 'Non-Customized New SKU' || v.projType == 'Customized New SKU')}">
+                                    <b>Projected Start Date</b>
+                                    <aura:set attribute="else">
+                                        <b>Projected Disco Date</b>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width:17%">
+                            <div class="slds-text-align--center">
+                                <aura:if isTrue="{!(v.projType == 'Non-Customized New SKU' || v.projType == 'Customized New SKU')}">
+                                    <b>Override</b>
+                                    <aura:set attribute="else">
+                                        <b>Override</b>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                        </div>
+                    </div>
+                    <aura:iteration items="{!objWrapper.lstBrand}" var="Brands">
+                        <div class="slds-grid" style="background-color:#e3f3ff">
+                            <div class="slds-col" style="width:4%">
+                                <div class="slds-text-align--left">
+                                    <b>&nbsp;</b>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:11%">
+                                <div class="slds-text-align--left">
+                                    <ui:outputText value="{!Brands.Name}"/>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:23%">
+                                <div class="slds-text-align--left">
+                                    <ui:outputTextArea value="{!Brands.Brand_Description__c}"/>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:10%">
+                                <div class="slds-text-align--left">
+                                    <ui:outputText value="{!Brands.Type__c}"/>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:12%">
+                                <div class="slds-text-align--left">
+                                    <ui:outputText value="{!Brands.Status__c}"/>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:12%">
+                                <div class="slds-text-align--left">
+                                    <ui:outputCurrency value="{!Brands.EOH_Inventory_Formula__c}"/>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:12%">
+                                <div class="slds-text-align--left">
+                                    <aura:if isTrue="{!(v.projType == 'Non-Customized New SKU' || v.projType == 'Customized New SKU')}">
+                                        <ui:outputDate value="{!Brands.Projected_Start_Date_Effective__c}" format="MM/dd/yyyy"/>
+                                        <aura:set attribute="else">
+                                            <ui:outputDate value="{!Brands.Projected_Disco_Date_Effective__c}" format="MM/dd/yyyy"/>
+                                        </aura:set>
+                                    </aura:if>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width:17%">
+                                <div class="slds-text-align--left">
+                                    <aura:if isTrue="{!(v.projType == 'Non-Customized New SKU' || v.projType == 'Customized New SKU')}">
+                                        <!--<ui:outputDate value="{!Brands.Projected_Start_Date_Effective__c}" format="MM/dd/yyyy"/>-->
+                                        <ui:inputDate value="{!Brands.Projected_Start_Date_Override__c}" displayDatePicker="true" blur="{!c.addToChangedList}" class="{!Brands.Id}" format="MM/dd/yyyy"/>
+                                        <aura:set attribute="else">
+                                            <!--<ui:outputDate value="{!Brands.Projected_Disco_Date_Effective__c}" format="MM/dd/yyyy"/>-->
+                                            <ui:inputDate value="{!Brands.Projected_Disco_Date_Override__c}" displayDatePicker="true" blur="{!c.addToChangedList}" class="{!Brands.Id}" format="MM/dd/yyyy"/>
+                                        </aura:set>
+                                    </aura:if>
+                                </div>
+                            </div>
+                        </div>
+                    </aura:iteration>
+                </aura:if>
+            </div>
+        </aura:iteration>
+    </div>
+</aura:component>

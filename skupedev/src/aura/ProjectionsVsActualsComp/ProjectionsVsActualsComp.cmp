@@ -1,0 +1,172 @@
+<aura:component controller="ProjectionsVsActualsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global"  >
+    
+    <ltng:require styles="{!$Resource.SLDS +'/assets/styles/salesforce-lightning-design-system-ltng.css'}"/>
+    
+    <aura:attribute name="categorylcycle" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="categorylcycleHeaders" type="string[]" default="Category,LifeCycle,Projections,Actuals"/>    
+    <aura:attribute name="categoryPtype" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="categoryPtypeHeaders" type="string[]" default="Category,Projection Type,Projections,Actuals"/>
+    
+    <aura:attribute name="newSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="newSKUcount" type="integer" default="0"/>
+    <aura:attribute name="discSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="discSKUcount" type="integer" default="0"/>
+	<aura:attribute name="incorrectNewSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="incorrectNewSKUcount" type="integer" default="0"/>
+	<aura:attribute name="incorrectDiscSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="incorrectDiscSKUcount" type="integer" default="0"/>
+    <aura:attribute name="noChangeSKUs" type="ProjectionsVsActualsController.wrapperData[]" />
+    <aura:attribute name="noChangeSKUcount" type="integer" default="0"/>
+    
+    <aura:attribute name="CollapseHitting" type="integer" default="0"/>
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    
+    <aura:attribute name="category" type="String[]" />
+    <aura:attribute name="lCycle" type="String[]" />
+    <aura:attribute name="brand" type="String[]" />
+    <aura:attribute name="rangeStart" type="Date" />
+    <aura:attribute name="rangeEnd" type="Date" />
+    <aura:attribute name="strType" type="String[]" />
+    <aura:attribute name="strGBU" type="String" />
+    
+    <aura:attribute name="filterLabel" type="map" default="{ Aircare: 'Air Care', Dishcare: 'Dish Care', Surfacecare: 'Surface Care', AP: 'Active &amp; Planned', RH: 'Remnant &amp; Historical',AllAirCare: 'All Air Care',ADW: 'ADW',HDW: 'HDW',MrClean: 'Mr Clean',Swiffer: 'Swiffer',Customized: 'MSO',Non-customized: 'GBU'}" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="c:SkuAccordionevent" action="{!c.handleAccordionEvent}"/>
+    
+    <!-- <aura:handler event="c:FilterEvent" action="{!c.handleFilterEvent}"/> -->
+    <!-- <aura:handler name="FilterAttribute" event="c:FilterEvtComp" action="{!c.handleFilterEvent}"/>  -->
+    
+    <div class="SLDS">  
+        
+        <aura:if isTrue="{!v.Spinner}">                    
+            <div aura:id="spinnerId" class="slds-spinner_container slds-is-relative" >
+                <div class="slds-backdrop slds-backdrop--open"></div>
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--medium " role="alert">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>                    
+    	</aura:if> 
+        
+        <div class="slds-grid " style="padding: 5px;" >
+            <div class="slds-col" style="width:50%;">
+                <div class="slds-m-around--medium" style="padding: 2px;">                     
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered table1 cFilterData">
+                        <thead>
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                                <aura:iteration items="{!v.categorylcycleHeaders}" var="header" indexVar="index">
+                                    <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                        <div class="slds-truncate " title="{!header}">{!header}</div> 
+                                    </th>
+                                </aura:iteration>                                   
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            <aura:iteration items="{!v.categorylcycle}" var="clcy" indexVar="index">
+                                <tr>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.category}"> {!clcy.category} </div>
+                                    </td>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.LfCycle_ProType}"> {!clcy.LfCycle_ProType} </div>
+                                    </td>
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.projections}"> {!clcy.projections} </div>
+                                    </td>
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.actuals}"> {!clcy.actuals} </div>
+                                    </td>                            
+                                </tr>                
+                            </aura:iteration>                      
+                        </tbody>
+                    </table>                     
+                </div>         
+            </div>
+            
+             <div class="slds-col" style="width:50%;">
+                <div class="slds-m-around--medium" style="padding: 2px;">                     
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered table1 cFilterData">
+                        <thead>
+                            <tr class="slds-text-title" style="background-color: #E1EDF9;">
+                                <!-- <th scope="col"></th>  --> 
+                                <aura:iteration items="{!v.categoryPtypeHeaders}" var="header" indexVar="index">
+                                    <th scope="col" style="width:3.25rem; font-weight: bold; color: black;" class="slds-cell-wrap" >
+                                        <div class="slds-truncate " title="{!header}">{!header}</div> 
+                                    </th>
+                                </aura:iteration>                                   
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            <aura:iteration items="{!v.categoryPtype}" var="clcy" indexVar="index">
+                                <tr>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.category}"> {!clcy.category} </div>
+                                    </td>
+                                    <td style="width:3.25rem;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.LfCycle_ProType}"> {!clcy.LfCycle_ProType} </div>
+                                    </td>
+                                    <aura:if isTrue="{! clcy.actuals==98765}">
+                                    <td colspan="2" style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.projections}"> {!clcy.projections} </div>
+                                    </td>
+                                    </aura:if>
+                                    <aura:if isTrue="{! not(clcy.actuals==98765)}">
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.projections}"> {!clcy.projections} </div>
+                                    </td>
+                                    <td style="width:3.25rem; text-align: right;" class="slds-cell-wrap">
+                                        <div class="slds-truncate" title="{!clcy.actuals}"> {!clcy.actuals} </div>
+                                    </td>
+                                    </aura:if>
+                                </tr>                
+                            </aura:iteration>                      
+                        </tbody>
+                    </table>                     
+                </div>         
+            </div>           
+            
+       </div>
+         
+            
+    <c:CollapsiblePanel header="New SKUs" skucount="{!v.newSKUcount}">
+        <aura:if isTrue="{!!empty(v.newSKUs)}">
+			<c:paginationCmp SKU="{!v.newSKUs}"/>           
+        </aura:if>
+    </c:CollapsiblePanel>  
+            
+    <c:CollapsiblePanel header="Discontinued SKUs" skucount="{!v.discSKUcount}">
+        <aura:if isTrue="{!!empty(v.discSKUs)}">
+        	<c:paginationCmp SKU="{!v.discSKUs}" />
+        </aura:if>
+    </c:CollapsiblePanel> 
+            
+    <c:CollapsiblePanel header="Incorrect New SKU Projections" skucount="{!v.incorrectNewSKUcount}">
+        <aura:if isTrue="{!!empty(v.incorrectNewSKUs)}">
+        	<c:paginationCmp SKU="{!v.incorrectNewSKUs}"/>
+        </aura:if>
+    </c:CollapsiblePanel> 
+            
+    <c:CollapsiblePanel header="Incorrect Discontinued SKU Projections" skucount="{!v.incorrectDiscSKUcount}">
+        <aura:if isTrue="{!!empty(v.incorrectDiscSKUs)}">
+        	<c:paginationCmp SKU="{!v.incorrectDiscSKUs}"/>
+        </aura:if>
+    </c:CollapsiblePanel> 
+            
+    <c:CollapsiblePanel header="SKUs with NO CHANGES" skucount="{!v.noChangeSKUcount}">
+        <aura:if isTrue="{!!empty(v.noChangeSKUs)}">
+        	<c:paginationCmp SKU="{!v.noChangeSKUs}" dropCol="true"/>
+        </aura:if>
+    </c:CollapsiblePanel> 
+    
+        
+	<!-- -spinner start- -->
+    
+    <!--<aura:handler event="aura:waiting" action="{!c.showSpinner}"/> -->
+    <!--<aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/> -->
+        
+    <!--  -spinner end- -->
+	</div>	
+</aura:component>

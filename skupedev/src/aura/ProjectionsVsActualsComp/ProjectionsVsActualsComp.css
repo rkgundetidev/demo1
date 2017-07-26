@@ -1,0 +1,12 @@
+.THIS {
+}
+.THIS.table1 {
+    border-spacing: 0;
+    border-color: #ccc;
+    border-left: 1px solid #d8dde6;    
+    border-right: 1px solid #d8dde6;
+}
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}

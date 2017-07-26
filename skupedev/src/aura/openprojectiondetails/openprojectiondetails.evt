@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="Opens SKUs with Ids passed" >
+    <aura:attribute type="String[]" name="skuids"/>
+    <aura:attribute type="String" name="projType"/>
+    <aura:attribute type="String" name="mnth" />
+    <aura:attribute type="String" name="cat" />
+</aura:event>
